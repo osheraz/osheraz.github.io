@@ -64,7 +64,7 @@ The variance of the distribution is $\sigma^{2}$.
 &lt;details class="spoiler " id="spoiler-2">
 &lt;summary>What is the parameter $\mu$?&lt;/summary>
 &lt;p>The parameter $\mu$ is the mean or expectation of the distribution.&lt;/p>
-&lt;/details></description></item><item><title>Wheel Loader Scooping Controller Using Deep Reinforcement Learning</title><link>https://osheraz.github.io/publication/ddpg/</link><pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate><guid>https://osheraz.github.io/publication/ddpg/</guid><description/></item><item><title>Display Jupyter Notebooks with Academic</title><link>https://osheraz.github.io/blog-unused/jupyter/</link><pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate><guid>https://osheraz.github.io/blog-unused/jupyter/</guid><description>&lt;pre>&lt;code class="language-python">from IPython.core.display import Image
+&lt;/details></description></item><item><title>Wheel Loader Scooping Controller Using Deep Reinforcement Learning</title><link>https://osheraz.github.io/publication/ddpg/</link><pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate><guid>https://osheraz.github.io/publication/ddpg/</guid><description/></item><item><title>Display Jupyter Notebooks with Academic</title><link>https://osheraz.github.io/blog/jupyter/</link><pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate><guid>https://osheraz.github.io/blog/jupyter/</guid><description>&lt;pre>&lt;code class="language-python">from IPython.core.display import Image
 Image('https://www.python.org/static/community_logos/python-logo-master-v3-TM-flattened.png')
 &lt;/code>&lt;/pre>
 &lt;p>&lt;img src="./index_1_0.png" alt="png">&lt;/p>
