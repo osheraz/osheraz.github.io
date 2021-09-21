@@ -1,38 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Well, I should have written that down | Osher Azulay</title><link>https://osheraz.github.io/blog/</link><atom:link href="https://osheraz.github.io/blog/index.xml" rel="self" type="application/rss+xml"/><description>Well, I should have written that down</description><generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Tue, 05 Feb 2019 00:00:00 +0000</lastBuildDate><image><url>https://osheraz.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url><title>Well, I should have written that down</title><link>https://osheraz.github.io/blog/</link></image><item><title>Display Jupyter Notebooks with Academic</title><link>https://osheraz.github.io/blog/jupyter/</link><pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate><guid>https://osheraz.github.io/blog/jupyter/</guid><description>&lt;pre>&lt;code class="language-python">from IPython.core.display import Image
-Image('https://www.python.org/static/community_logos/python-logo-master-v3-TM-flattened.png')
-&lt;/code>&lt;/pre>
-&lt;p>&lt;img src="./index_1_0.png" alt="png">&lt;/p>
-&lt;pre>&lt;code class="language-python">print(&amp;quot;Welcome to Academic!&amp;quot;)
-&lt;/code>&lt;/pre>
-&lt;pre>&lt;code>Welcome to Academic!
-&lt;/code>&lt;/pre>
-&lt;h2 id="install-python-and-jupyterlab">Install Python and JupyterLab&lt;/h2>
-&lt;p>&lt;a href="https://www.anaconda.com/distribution/#download-section" target="_blank" rel="noopener">Install Anaconda&lt;/a> which includes Python 3 and JupyterLab.&lt;/p>
-&lt;p>Alternatively, install JupyterLab with &lt;code>pip3 install jupyterlab&lt;/code>.&lt;/p>
-&lt;h2 id="create-or-upload-a-jupyter-notebook">Create or upload a Jupyter notebook&lt;/h2>
-&lt;p>Run the following commands in your Terminal, substituting &lt;code>&amp;lt;MY-WEBSITE-FOLDER&amp;gt;&lt;/code> and &lt;code>&amp;lt;SHORT-POST-TITLE&amp;gt;&lt;/code> with the file path to your Academic website folder and a short title for your blog post (use hyphens instead of spaces), respectively:&lt;/p>
-&lt;pre>&lt;code class="language-bash">mkdir -p &amp;lt;MY-WEBSITE-FOLDER&amp;gt;/content/post/&amp;lt;SHORT-POST-TITLE&amp;gt;/
-cd &amp;lt;MY-WEBSITE-FOLDER&amp;gt;/content/post/&amp;lt;SHORT-POST-TITLE&amp;gt;/
-jupyter lab index.ipynb
-&lt;/code>&lt;/pre>
-&lt;p>The &lt;code>jupyter&lt;/code> command above will launch the JupyterLab editor, allowing us to add Academic metadata and write the content.&lt;/p>
-&lt;h2 id="edit-your-post-metadata">Edit your post metadata&lt;/h2>
-&lt;p>The first cell of your Jupter notebook will contain your post metadata (&lt;a href="https://sourcethemes.com/academic/docs/front-matter/" target="_blank" rel="noopener">front matter&lt;/a>).&lt;/p>
-&lt;p>In Jupter, choose &lt;em>Markdown&lt;/em> as the type of the first cell and wrap your Academic metadata in three dashes, indicating that it is YAML front matter:&lt;/p>
-&lt;pre>&lt;code>---
-title: My post's title
-date: 2019-09-01
-# Put any other Academic metadata here...
----
-&lt;/code>&lt;/pre>
-&lt;p>Edit the metadata of your post, using the &lt;a href="https://sourcethemes.com/academic/docs/managing-content" target="_blank" rel="noopener">documentation&lt;/a> as a guide to the available options.&lt;/p>
-&lt;p>To set a &lt;a href="https://sourcethemes.com/academic/docs/managing-content/#featured-image" target="_blank" rel="noopener">featured image&lt;/a>, place an image named &lt;code>featured&lt;/code> into your post&amp;rsquo;s folder.&lt;/p>
-&lt;p>For other tips, such as using math, see the guide on &lt;a href="https://sourcethemes.com/academic/docs/writing-markdown-latex/" target="_blank" rel="noopener">writing content with Academic&lt;/a>.&lt;/p>
-&lt;h2 id="convert-notebook-to-markdown">Convert notebook to Markdown&lt;/h2>
-&lt;pre>&lt;code class="language-bash">jupyter nbconvert index.ipynb --to markdown --NbConvertApp.output_files_dir=.
-&lt;/code>&lt;/pre>
-&lt;h2 id="example">Example&lt;/h2>
-&lt;p>This post was created with Jupyter. The orginal files can be found at &lt;a href="https://github.com/gcushen/hugo-academic/tree/master/exampleSite/content/post/jupyter">https://github.com/gcushen/hugo-academic/tree/master/exampleSite/content/post/jupyter&lt;/a>&lt;/p></description></item><item><title>Mapping, Perception and More</title><link>https://osheraz.github.io/blog/slam/</link><pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate><guid>https://osheraz.github.io/blog/slam/</guid><description>&lt;p align="center">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Well, I should have written that down | Osher Azulay</title><link>https://osheraz.github.io/blog/</link><atom:link href="https://osheraz.github.io/blog/index.xml" rel="self" type="application/rss+xml"/><description>Well, I should have written that down</description><generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Tue, 05 Feb 2019 00:00:00 +0000</lastBuildDate><image><url>https://osheraz.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url><title>Well, I should have written that down</title><link>https://osheraz.github.io/blog/</link></image><item><title>Mapping, Perception and More</title><link>https://osheraz.github.io/blog/slam/</link><pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate><guid>https://osheraz.github.io/blog/slam/</guid><description>&lt;p align="center">
 &lt;img width="400" height="300" src="./test.png">
 &lt;/p>
 &lt;p>&lt;br />&lt;/p>
@@ -47,7 +13,8 @@ date: 2019-09-01
 &lt;li>&lt;input checked="" disabled="" type="checkbox"> Iterative Closet Points (ICP)&lt;/li>
 &lt;/ul>
 &lt;p>Modeling and understanding the environment is a crucial task for autonomous robotics, in particular for mobile robots. Occupancy Grid Mapping refers to a family of computer algorithms in probabilistic robotics for mobile robots. This address the problem of generating maps from noisy and uncertain sensor measurement data, with the assumption that the robot pose is known. The basic idea of the occupancy grid is to represent a map of the environment as an evenly spaced field of binary random variables each representing the presence of an obstacle at that location in the environment. In this project, we experienced with real captured driving data - &lt;code>KITTI Dataset&lt;/code>. The data-set contains 6 hours of traffic scenarios at 10–100 Hz using a variety of sensor modalities such as high-resolution color and grayscale stereo cameras, a Velodyne 3D laser scanner, and a high-precision GPS/IMU inertial navigation system.&lt;/p>
-&lt;p>The goal of an occupancy mapping algorithm is to estimate the posterior probability over maps given the data: {\displaystyle p(m\mid z_{1:t},x_{1:t})}p(m\mid z_{{1:t}},x_{{1:t}}), where {\displaystyle m}m is the map, {\displaystyle z_{1:t}}z_{{1:t}} is the set of measurements from time 1 to t, and {\displaystyle x_{1:t}}x_{{1:t}} is the set of robot poses from time 1 to t. The controls and odometry data play no part in the occupancy grid mapping algorithm since the path is assumed known.&lt;/p>
+&lt;p>The goal of an occupancy mapping algorithm is to estimate the posterior probability over maps given the data: &lt;code>$p(m\mid z_{1:t},x_{1:t}) $p(m\mid z_{{1:t}},x_{{1:t}})$&lt;/code>
+, where &lt;code>m&lt;/code> is the map, &lt;code>$z_{1:t}}z_{{1:t}}$&lt;/code> is the set of measurements from time 1 to t, and &lt;code>$x_{1:t}}x_{{1:t}$&lt;/code> is the set of robot poses from time 1 to t. The controls and odometry data play no part in the occupancy grid mapping algorithm since the path is assumed known.&lt;/p>
 &lt;p>To implement the occupancy map, i used the &lt;code>pykitti&lt;/code> python package, which is a light package of minimal set of tools for working the the KITTI dataset. Basically, after passing the path of the recording, it provides each of the sensors data via generators for easy sequential access. This package assumes that you have already downloaded the calibration data associated with the sequences you want to work on, and that the directory structure is unchanged from the original structure laid out in the KITTI zip files.&lt;/p>
 &lt;pre>&lt;code>def pykitti_dataset():
 # Change this to the directory where you store KITTI data
