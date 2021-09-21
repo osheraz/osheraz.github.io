@@ -133,7 +133,7 @@ $l(m_{i}|z_{1:t},x_{1:t}) = l(m_{i}|z_{t},x_{t}) + l(m_{i}|z_{1:t−1},x_{1:t−
 &lt;ul>
 &lt;li>Get the pose of the car&lt;/li>
 &lt;li>Transform the PCL to world coordinate - loop over the current PCL and multiply each point with the current Lidar transformation matrix.&lt;/li>
-&lt;li>Importance sampling - get the relevant measurement from the points cloud who’s hit at least twice in vertical direction.&lt;/li>
+&lt;li>Importance sampling - get only the cells with more than one measurement in the vertical direction.&lt;/li>
 &lt;li>Update the occupancy and threshold maps.&lt;/li>
 &lt;li>Visualize the scene map, the current point cloud the current occupancy map.&lt;/li>
 &lt;/ul>
