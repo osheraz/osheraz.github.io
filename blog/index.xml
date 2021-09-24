@@ -150,6 +150,32 @@ layout:
 &lt;li>Load the &lt;code>settings.yaml&lt;/code> and &lt;code>tags.yaml&lt;/code> configurations files to the parameters server.&lt;/li>
 &lt;li>Run the &lt;code>apriltag_ros&lt;/code> core node and publish the detected transformation.&lt;/li>
 &lt;/ul>
+&lt;pre>&lt;code>&amp;lt;launch&amp;gt;
+&amp;lt;node name=&amp;quot;camera&amp;quot; pkg=&amp;quot;usb_cam&amp;quot; type=&amp;quot;usb_cam_node&amp;quot; output=&amp;quot;screen&amp;quot; &amp;gt;
+&amp;lt;param name=&amp;quot;video_device&amp;quot; value=&amp;quot;/dev/video4&amp;quot; /&amp;gt;
+&amp;lt;param name=&amp;quot;image_width&amp;quot; value=&amp;quot;1280&amp;quot; /&amp;gt;
+&amp;lt;param name=&amp;quot;image_height&amp;quot; value=&amp;quot;720&amp;quot; /&amp;gt;
+&amp;lt;param name=&amp;quot;pixel_format&amp;quot; value=&amp;quot;yuyv&amp;quot; /&amp;gt;
+&amp;lt;param name=&amp;quot;camera_frame_id&amp;quot; value=&amp;quot;rgb_cam_link&amp;quot; /&amp;gt;
+&amp;lt;/node&amp;gt;
+&amp;lt;node pkg=&amp;quot;image_proc&amp;quot; type=&amp;quot;image_proc&amp;quot; name=&amp;quot;iamge_proc_node&amp;quot; ns=&amp;quot;camera&amp;quot; /&amp;gt;
+&amp;lt;arg name=&amp;quot;launch_prefix&amp;quot; default=&amp;quot;&amp;quot; /&amp;gt; &amp;lt;!-- set to value=&amp;quot;gdbserver localhost:10000&amp;quot; for remote debugging --&amp;gt;
+&amp;lt;arg name=&amp;quot;node_namespace&amp;quot; default=&amp;quot;apriltag_ros_continuous_node&amp;quot; /&amp;gt;
+&amp;lt;arg name=&amp;quot;camera_name&amp;quot; default=&amp;quot;/camera&amp;quot; /&amp;gt;
+&amp;lt;arg name=&amp;quot;camera_frame&amp;quot; default=&amp;quot;camera&amp;quot; /&amp;gt;
+&amp;lt;arg name=&amp;quot;image_topic&amp;quot; default=&amp;quot;image_rect&amp;quot; /&amp;gt;
+&amp;lt;!-- Set parameters --&amp;gt;
+&amp;lt;rosparam command=&amp;quot;load&amp;quot; file=&amp;quot;$(find apriltag_ros)/config/settings.yaml&amp;quot; ns=&amp;quot;$(arg node_namespace)&amp;quot; /&amp;gt;
+&amp;lt;rosparam command=&amp;quot;load&amp;quot; file=&amp;quot;$(find apriltag_ros)/config/tags.yaml&amp;quot; ns=&amp;quot;$(arg node_namespace)&amp;quot; /&amp;gt;
+&amp;lt;node pkg=&amp;quot;apriltag_ros&amp;quot; type=&amp;quot;apriltag_ros_continuous_node&amp;quot; name=&amp;quot;$(arg node_namespace)&amp;quot; clear_params=&amp;quot;true&amp;quot; output=&amp;quot;screen&amp;quot; launch-prefix=&amp;quot;$(arg launch_prefix)&amp;quot; &amp;gt;
+&amp;lt;!-- Remap topics from those used in code to those on the ROS network --&amp;gt;
+&amp;lt;remap from=&amp;quot;image_rect&amp;quot; to=&amp;quot;$(arg camera_name)/$(arg image_topic)&amp;quot; /&amp;gt;
+&amp;lt;remap from=&amp;quot;camera_info&amp;quot; to=&amp;quot;$(arg camera_name)/camera_info&amp;quot; /&amp;gt;
+&amp;lt;param name=&amp;quot;camera_frame&amp;quot; type=&amp;quot;str&amp;quot; value=&amp;quot;$(arg camera_frame)&amp;quot; /&amp;gt;
+&amp;lt;param name=&amp;quot;publish_tag_detections_image&amp;quot; type=&amp;quot;bool&amp;quot; value=&amp;quot;true&amp;quot; /&amp;gt; &amp;lt;!-- default: false --&amp;gt;
+&amp;lt;/node&amp;gt;
+&amp;lt;/launch&amp;gt;
+&lt;/code>&lt;/pre>
 &lt;/p>
 &lt;/details>
 &lt;details class="spoiler " id="spoiler-2">
