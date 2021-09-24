@@ -154,23 +154,41 @@ $l(m_{i}|z_{1:t},x_{1:t}) = l(m_{i}|z_{t},x_{t}) + l(m_{i}|z_{1:t−1},x_{1:t−
 &lt;summary>Project No.4&lt;/summary>
 &lt;p>Todo.&lt;/p>
 &lt;/details></description></item><item><title>Pose Estimation using Markers</title><link>https://osheraz.github.io/blog/track/</link><pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate><guid>https://osheraz.github.io/blog/track/</guid><description>&lt;p align="center">
-&lt;img src="./test.png" width="200" height="200"/>
+&lt;img src="./body-removebg-preview.png" />
 &lt;/p>
-&lt;p>&lt;br />&lt;/p>
+&lt;p align = "right">
+&lt;sub>&lt;sup>Image courtesy to TagSlam&lt;/sup>&lt;/sub>
+&lt;/p>
+&lt;br />
 &lt;p>Throughout my research, I had to track the $SE(3)$ pose of an object for various of application. In this post ill summarize the &lt;code>ROS&lt;/code>-based implementation of some of the methods. Basically, most of the marker-based methods that ill cover only requires a USB-Cam, except the last one, which requires the whole &lt;code>OptiTrack&lt;/code> motion captures system. We uses &lt;code>OptiTrack&lt;/code> at the lab for for the finer applications.&lt;/p>
-&lt;p>In the following, ill use the notation $T^{1}_{0}$ to describe the homogeneous transformation matrix between coordinates frame 1 to 0.&lt;/p>
 &lt;div class="alert alert-note">
 &lt;div>
-Most of the videos and figures are taken from the authors implementation and are not mine.
+Most of the videos and figures are taken from the authors implementation and are not mine. I just gather them for future use.
 &lt;/div>
 &lt;/div>
+&lt;p>In the following, ill use the notation $T^{1}_{0}$ to describe the homogeneous transformation matrix between coordinates frame 1 to 0. Detailed explanation about marker-based transformation can be seen &lt;a href="https://berndpfrommer.github.io/tagslam_web/concepts/" target="_blank" rel="noopener">Here&lt;/a>&lt;/p>
 &lt;details class="spoiler " id="spoiler-1">
 &lt;summary>AprilTag Markers&lt;/summary>
-&lt;p>&lt;p>The &lt;a href="https://april.eecs.umich.edu/software/apriltag">AprilTag&lt;/a> come in several different families, depending on how many bits a tag can represent. Some tag families have large, coarse bit blocks (&lt;code>16h5&lt;/code>), while others are fine and smaller (&lt;code>36h11&lt;/code>- most common). For lower resolution camera, consider the &lt;code>16h5&lt;/code> family, For better ill suggest the &lt;code>36h11&lt;/code> and for circular object you should use the &lt;code>21h7&lt;/code> family.
-A full detailed explanation how to generate tags is described:&lt;/p>
+&lt;p>&lt;p>The &lt;a href="https://april.eecs.umich.edu/software/apriltag">AprilTag&lt;/a> come in several different families, depending on how many bits a tag can represent. Some tag families have large, coarse bit blocks (&lt;code>16h5&lt;/code>), while others are fine and smaller (&lt;code>36h11&lt;/code>- most common). For lower resolution camera, consider the &lt;code>16h5&lt;/code> family, For better ill suggest the &lt;code>36h11&lt;/code> and for circular object you should use the &lt;code>21h7&lt;/code> family.&lt;/p>
+&lt;p>A full detailed explanation how to generate tags is described:&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="https://github.com/AprilRobotics/apriltag-generation">AprilTag-Generation&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://berndpfrommer.github.io/tagslam_web/making_tags/">Making and Using AprilTags&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p align="center">
+&lt;img src="./april.png" />
+&lt;/p>
+&lt;p>The package works as shown in the above figure. The following default input topics are subscribed to (which can be remapped based on your needs):&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>/camera/image_rect&lt;/code>: a &lt;code>sensor_msgs/Image&lt;/code> topic which contains the image (e.g. a frame of a video stream coming from a camera). The image is assumed to be undistorted, i.e. produced by a pinhole camera. I recommend to use the &lt;a href="http://wiki.ros.org/image_proc">image_proc_node&lt;/a>, which is meant to sit between the camera driver and vision processing nodes. &lt;code>image_proc&lt;/code> removes camera distortion from the raw image stream, and if necessary will convert Bayer or YUV422 format image data to color.&lt;/li>
+&lt;li>&lt;code>/camera/camera_info&lt;/code>: a &lt;code>sensor_msgs/CameraInfo&lt;/code> topic which contains the camera calibration matrix in &lt;code>/camera/camera_info/K&lt;/code>. One can obtain a specific camera&amp;rsquo;s K via camera intrinsics calibration using any camera calibarion methods (&lt;a href="http://wiki.ros.org/camera_calibration">Option 1&lt;/a>, &lt;a href="https://navigation.ros.org/tutorials/docs/camera_calibration.html">Option 2&lt;/a>, &lt;a href="https://www.youtube.com/watch?v=z4Oh_9Li72s&amp;amp;ab_channel=RoblabWHGe">Option 3&lt;/a> and so on..).&lt;/li>
+&lt;/ul>
+&lt;p>The Apriltag ROS package takes in a &lt;code>rectified&lt;/code> camera feed and returns a list of detected tags and their 3D locations. In order for this to work the software needs to know what tags it is looking for and how large they are. These are defined in 2 config files: &lt;code>config/settings.yaml&lt;/code> and &lt;code>config/tags.yaml&lt;/code>.&lt;/p>
+&lt;p>The behavior of the ROS wrapper is fully defined by the two configuration files &lt;code>config/tags.yaml&lt;/code> (which defines the tags and tag bundles to look for) and &lt;code>config/settings.yaml&lt;/code> (which configures the core AprilTag 2 algorithm itself). Then, the following topics are output:&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>/tf&lt;/code>: relative pose between the camera frame and each detected tag&amp;rsquo;s or tag bundle&amp;rsquo;s frame (specified in &lt;code>tags.yaml&lt;/code>) using &lt;code>tf&lt;/code>.&lt;/li>
+&lt;li>&lt;code>/tag_detections&lt;/code>: the same information as provided by the &lt;code>/tf&lt;/code> topic but as a custom message carrying the tag ID(s), size(s) and &lt;code>geometry_msgs/PoseWithCovarianceStamped&lt;/code> pose information.&lt;/li>
+&lt;li>&lt;code>/tag_detections_image&lt;/code>: the same image as input by &lt;code>/camera/image_rect&lt;/code> but with the detected tags highlighted.&lt;/li>
 &lt;/ul>
 &lt;/p>
 &lt;/details>
