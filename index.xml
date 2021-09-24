@@ -154,11 +154,11 @@ $l(m_{i}|z_{1:t},x_{1:t}) = l(m_{i}|z_{t},x_{t}) + l(m_{i}|z_{1:t−1},x_{1:t−
 &lt;summary>Project No.4&lt;/summary>
 &lt;p>Todo.&lt;/p>
 &lt;/details></description></item><item><title>Pose Estimation using Markers</title><link>https://osheraz.github.io/blog/track/</link><pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate><guid>https://osheraz.github.io/blog/track/</guid><description>&lt;p align="center">
-&lt;img src="./test.png"/>
+&lt;img src="./test.png" width="200" height="200"/>
 &lt;/p>
 &lt;p>&lt;br />&lt;/p>
 &lt;p>Throughout my research, I had to track the $SE(3)$ pose of an object for various of application. In this post ill summarize the &lt;code>ROS&lt;/code>-based implementation of some of the methods. Basically, most of the marker-based methods that ill cover only requires a USB-Cam, except the last one, which requires the whole &lt;code>OptiTrack&lt;/code> motion captures system. We uses &lt;code>OptiTrack&lt;/code> at the lab for for the finer applications.&lt;/p>
-&lt;p>In the following, ill use the notation $T^{0}_{1}$ to describe the homogenous tranformation matrix between coordiantes frame 1 to 0.&lt;/p>
+&lt;p>In the following, ill use the notation $T^{1}_{0}$ to describe the homogeneous transformation matrix between coordinates frame 1 to 0.&lt;/p>
 &lt;div class="alert alert-note">
 &lt;div>
 Most of the videos and figures are taken from the authors implementation and are not mine.
@@ -166,7 +166,13 @@ Most of the videos and figures are taken from the authors implementation and are
 &lt;/div>
 &lt;details class="spoiler " id="spoiler-1">
 &lt;summary>AprilTag Markers&lt;/summary>
-&lt;p>Allright,&lt;/p>
+&lt;p>&lt;p>The &lt;a href="https://april.eecs.umich.edu/software/apriltag">AprilTag&lt;/a> come in several different families, depending on how many bits a tag can represent. Some tag families have large, coarse bit blocks (&lt;code>16h5&lt;/code>), while others are fine and smaller (&lt;code>36h11&lt;/code>- most common). For lower resolution camera, consider the &lt;code>16h5&lt;/code> family, For better ill suggest the &lt;code>36h11&lt;/code> and for circular object you should use the &lt;code>21h7&lt;/code> family.
+A full detailed explanation how to generate tags is described:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/AprilRobotics/apriltag-generation">AprilTag-Generation&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://berndpfrommer.github.io/tagslam_web/making_tags/">Making and Using AprilTags&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/p>
 &lt;/details>
 &lt;details class="spoiler " id="spoiler-2">
 &lt;summary>ArTag Markers&lt;/summary>
