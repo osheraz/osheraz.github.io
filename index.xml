@@ -202,7 +202,7 @@ cd ~/catkin_ws # Navigate to the workspace
 rosdep install --from-paths src --ignore-src -r -y # Install any missing packages
 catkin build # Build all packages in the workspace (catkin_make_isolated will work also)
 &lt;/code>&lt;/pre>
-&lt;p>The package works as shown in the above figure. The following default input topics are subscribed to (which can be remapped based on your needs):&lt;/p>
+&lt;p>The package works as shown in the below figure. The following default input topics are subscribed to (which can be remapped based on your needs):&lt;/p>
 &lt;p align="center">
 &lt;img src="./april.png" />
 &lt;/p>
@@ -356,17 +356,22 @@ Identifying and tracking the pose of &lt;code>bundles&lt;/code> consisting of mu
 &lt;ul>
 &lt;li>&lt;code>bundle_files&lt;/code> (multiple strings) &amp;ndash; A list of XML file names, one for each bundle you wish to detect.&lt;/li>
 &lt;/ul>
-&lt;p>An example XML file showing this for a tagged table leg:&lt;/p>
-&lt;pre>&lt;code>&amp;lt;launch&amp;gt;
-&amp;lt;arg name=&amp;quot;marker_size&amp;quot; default=&amp;quot;4.4&amp;quot; /&amp;gt;
-&amp;lt;arg name=&amp;quot;max_new_marker_error&amp;quot; default=&amp;quot;0.08&amp;quot; /&amp;gt;
-&amp;lt;arg name=&amp;quot;max_track_error&amp;quot; default=&amp;quot;0.2&amp;quot; /&amp;gt;
-&amp;lt;arg name=&amp;quot;cam_image_topic&amp;quot; default=&amp;quot;/wide_stereo/left/image_color&amp;quot; /&amp;gt;
-&amp;lt;arg name=&amp;quot;cam_info_topic&amp;quot; default=&amp;quot;/wide_stereo/left/camera_info&amp;quot; /&amp;gt;
-&amp;lt;arg name=&amp;quot;output_frame&amp;quot; default=&amp;quot;/torso_lift_link&amp;quot; /&amp;gt;
-&amp;lt;arg name=&amp;quot;bundle_files&amp;quot; default=&amp;quot;$(find ar_track_alvar)/bundles/truthTableLeg.xml $(find ar_track_alvar)/bundles/table_8_9_10.xml&amp;quot; /&amp;gt;
-&amp;lt;node name=&amp;quot;ar_track_alvar&amp;quot; pkg=&amp;quot;ar_track_alvar&amp;quot; type=&amp;quot;findMarkerBundlesNoKinect&amp;quot; respawn=&amp;quot;false&amp;quot; output=&amp;quot;screen&amp;quot; args=&amp;quot;$(arg marker_size) $(arg max_new_marker_error) $(arg max_track_error) $(arg cam_image_topic) $(arg cam_info_topic) $(arg output_frame) $(arg bundle_files)&amp;quot; /&amp;gt;
-&amp;lt;/launch&amp;gt;
+&lt;p>An example XML file for 2 markers:&lt;/p>
+&lt;pre>&lt;code>&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot; ?&amp;gt;
+&amp;lt;multimarker markers=&amp;quot;2&amp;quot;&amp;gt;
+&amp;lt;marker index=&amp;quot;8&amp;quot; status=&amp;quot;1&amp;quot;&amp;gt;
+&amp;lt;corner x=&amp;quot;-2.2&amp;quot; y=&amp;quot;-2.2&amp;quot; z=&amp;quot;0.0&amp;quot; /&amp;gt;
+&amp;lt;corner x=&amp;quot;2.2&amp;quot; y=&amp;quot;-2.2&amp;quot; z=&amp;quot;0.0&amp;quot; /&amp;gt;
+&amp;lt;corner x=&amp;quot;2.2&amp;quot; y=&amp;quot;2.2&amp;quot; z=&amp;quot;0.0&amp;quot; /&amp;gt;
+&amp;lt;corner x=&amp;quot;-2.2&amp;quot; y=&amp;quot;2.2&amp;quot; z=&amp;quot;0.0&amp;quot; /&amp;gt;
+&amp;lt;/marker&amp;gt;
+&amp;lt;marker index=&amp;quot;9&amp;quot; status=&amp;quot;1&amp;quot;&amp;gt;
+&amp;lt;corner x=&amp;quot;-2.2&amp;quot; y=&amp;quot;11.8&amp;quot; z=&amp;quot;0.0&amp;quot; /&amp;gt;
+&amp;lt;corner x=&amp;quot;2.2&amp;quot; y=&amp;quot;11.8&amp;quot; z=&amp;quot;0.0&amp;quot; /&amp;gt;
+&amp;lt;corner x=&amp;quot;2.2&amp;quot; y=&amp;quot;16.2&amp;quot; z=&amp;quot;0.0&amp;quot; /&amp;gt;
+&amp;lt;corner x=&amp;quot;-2.2&amp;quot; y=&amp;quot;16.2&amp;quot; z=&amp;quot;0.0&amp;quot; /&amp;gt;
+&amp;lt;/marker&amp;gt;
+&amp;lt;/multimarker&amp;gt;
 &lt;/code>&lt;/pre>
 &lt;/p>
 &lt;/details>
