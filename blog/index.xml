@@ -2,10 +2,12 @@
 &lt;img src="./test.jpg"/>
 &lt;/p>
 &lt;p>&lt;br />&lt;/p>
-&lt;p>Well, i took a really nice course last semester, which was all about autonomous driving. I really liked it because it was a hands-on course, with some of the nicest projects. The course introduced some of the core functions of autonomous driving system, such as localization and mapping, spatial perception and route planning which later on focus on deep learning solutions.&lt;/p>
-&lt;p>Throughout the course, i thought it would be great to write a brief description about the projects i have done, for later projects i might do.&lt;/p>
-&lt;h2 id="project-1">Project #1&lt;/h2>
-&lt;p>TODO: add the github folder here&lt;/p>
+&lt;p>Well, I took a really nice course last semester, which was all about autonomous driving. I really liked it because it was a hands-on course, with some of the nicest projects. The course introduced some of the core functions of autonomous driving system, such as localization and mapping, spatial perception and route planning which later on focus on deep learning solutions.&lt;/p>
+&lt;p>Throughout the course, I thought it would be great to write a brief description about the projects I have done, for later projects I might do.&lt;/p>
+&lt;details class="spoiler " id="spoiler-0">
+&lt;summary>&lt;h2 id="project-1">Project #1&lt;/h2>
+&lt;/summary>
+&lt;p>&lt;p>TODO: add the github folder here&lt;/p>
 &lt;h4 id="topics">Topics&lt;/h4>
 &lt;ul>
 &lt;li>&lt;input checked="" disabled="" type="checkbox"> Mapping and Localization&lt;/li>
@@ -20,7 +22,7 @@
 &lt;p align="center">
 &lt;img src="./Video_100x100.gif" width="500" height="500" />
 &lt;/p>
-&lt;p>Hmm, i think its enough intro, lets dig in the implementation. For that I used the &lt;code>pykitti&lt;/code> python package, which is a light package of minimal set of tools for working the the KITTI dataset. Basically, after passing the path of the recording, it provides each of the sensors data via generators for easy sequential access. This package assumes that you have already downloaded the calibration data associated with the sequences you want to work on, and that the directory structure is unchanged from the original structure laid out in the KITTI zip files.&lt;/p>
+&lt;p>Hmm, I think it&amp;rsquo;s enough intro, let&amp;rsquo;s dig into the implementation. For that I used the &lt;code>pykitti&lt;/code> python package, which is a light package of minimal set of tools for working the the KITTI dataset. Basically, after passing the path of the recording, it provides each of the sensors data via generators for easy sequential access. This package assumes that you have already downloaded the calibration data associated with the sequences you want to work on, and that the directory structure is unchanged from the original structure laid out in the KITTI zip files.&lt;/p>
 &lt;p>In the GitHub folder above, you can find the implementation of the &lt;code>OccupancyMap&lt;/code> class, which create and update the occupancy &amp;amp; threshold maps. I implemented the update function using the inverse sensor model described in Chapter 9 of “Probabilistic robotics”
 by Sebastian Thrun etal [2]. In each of the update functions, I looped over the perceptual
 field of the point cloud with respect to the current car position and updated the cell value of the occupancy map using the log odd form of the Bayes filter:
@@ -38,4 +40,6 @@ $l(m_{i}|z_{1:t},x_{1:t}) = l(m_{i}|z_{t},x_{t}) + l(m_{i}|z_{1:t−1},x_{1:t−
 &lt;li>Visualize the scene map, the current point cloud the current occupancy map.&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ol></description></item></channel></rss>
+&lt;/ol>
+&lt;/p>
+&lt;/details></description></item></channel></rss>
