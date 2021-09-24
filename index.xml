@@ -330,7 +330,7 @@ Identifying and tracking the pose of &lt;code>bundles&lt;/code> consisting of mu
 &lt;li>&lt;code>camera_info&lt;/code> (string) &amp;ndash; The name of the topic that provides the camera calibration parameters so that the image can be rectified&lt;/li>
 &lt;li>&lt;code>output_frame&lt;/code> (string) &amp;ndash; The name of the frame that the published Cartesian locations of the AR tags will be relative to&lt;/li>
 &lt;/ul>
-&lt;p>&lt;strong>IMPORTANT&lt;/strong> The node assumes that a Kinect camera being used as the camera, so that depth data can be integrated for better pose estimates. If you are not using a Kinect or do not desire to use depth data improvements, use &lt;code>individualMarkersNoKinect&lt;/code> instead.&lt;/p>
+&lt;p>&lt;strong>IMPORTANT:&lt;/strong> The node assumes that a Kinect camera being used as the camera, so that depth data can be integrated for better pose estimates. If you are not using a Kinect or do not desire to use depth data improvements, use &lt;code>individualMarkersNoKinect&lt;/code> instead.&lt;/p>
 &lt;p>To use the package we need to create a new &lt;code>launch&lt;/code> file. Inside &lt;code>launch/&lt;/code> directory add &lt;code>alvar_track.launch&lt;/code> with the following content:&lt;/p>
 &lt;pre>&lt;code>&amp;lt;launch&amp;gt;
 &amp;lt;arg name=&amp;quot;marker_frame_id&amp;quot; default=&amp;quot;world&amp;quot;/&amp;gt;
