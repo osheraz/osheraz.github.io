@@ -163,7 +163,7 @@ $l(m_{i}|z_{1:t},x_{1:t}) = l(m_{i}|z_{t},x_{t}) + l(m_{i}|z_{1:t−1},x_{1:t−
 &lt;p>Throughout my research, I had to track the $SE(3)$ pose of an object for various of application. In this post ill summarize the &lt;code>ROS&lt;/code>-based implementation of some of the methods. Basically, most of the marker-based methods that ill cover only requires a USB-Cam, except the last one, which requires the whole &lt;code>OptiTrack&lt;/code> motion captures system. We uses &lt;code>OptiTrack&lt;/code> at the lab for for the finer applications.&lt;/p>
 &lt;div class="alert alert-note">
 &lt;div>
-Most of the videos and figures are taken from the authors implementation and are not mine. I just gather them for future use.
+Most of the videos, figures and explanation are taken from the authors implementation and are not mine. I just gather them for future use.
 &lt;/div>
 &lt;/div>
 &lt;p>In the following, ill use the notation $T^{1}_{0}$ to describe the homogeneous transformation matrix between coordinates frame 1 to 0. Detailed explanation about marker-based transformation can be seen &lt;a href="https://berndpfrommer.github.io/tagslam_web/concepts/" target="_blank" rel="noopener">Here&lt;/a>&lt;/p>
@@ -175,15 +175,16 @@ Most of the videos and figures are taken from the authors implementation and are
 &lt;li>&lt;a href="https://github.com/AprilRobotics/apriltag-generation">AprilTag-Generation&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://berndpfrommer.github.io/tagslam_web/making_tags/">Making and Using AprilTags&lt;/a>&lt;/li>
 &lt;/ul>
+&lt;p align="center">
+&lt;img src="./tag_size_april.jpg"/>
+&lt;/p>
 &lt;h4 id="measuring-the-tag-size">Measuring the tag Size&lt;/h4>
 &lt;p>When entering (ill explain it later) the size of your tag for pose estimation it is important to know what &amp;ldquo;size&amp;rdquo; is actually a measure of. The measurement that is called &amp;ldquo;size&amp;rdquo; is shown as &amp;ldquo;edge length&amp;rdquo; in the image below.
 The tag size should not be measured from the outside of the tag. The tag size is defined as the distance between the detection corners, or alternately, the length of the edge between the white border and the black border. The following illustration marks the detection corners with red &lt;code>X&lt;/code>s and the tag size with a red arrow for a tag from the 48h12Custom tag family.&lt;/p>
 &lt;p align="center">
 &lt;img src="./april_size.png" width=30% />
 &lt;/p>
-&lt;p align="center">
-&lt;img src="./tag_size_april.jpg" width=60% />
-&lt;/p>
+&lt;h4 id="apriltag_roshttpwikirosorgapriltag_ros">&lt;a href="http://wiki.ros.org/apriltag_ros">apriltag_ros&lt;/a>&lt;/h4>
 &lt;p align="center">
 &lt;img src="./april.png" />
 &lt;/p>
@@ -235,6 +236,20 @@ layout:
 }
 ]
 &lt;/code>&lt;/pre>
+&lt;p>As we can see in the above configuration, We can define 2 tracking methods, &lt;code>standalone_tags&lt;/code> and &lt;code>tag_bundles&lt;/code>. For &lt;code>standalone&lt;/code> tags, i.e. each marker represents a unique object in the environment we provide an ID and size for each tag you want to detect. For &lt;code>tag_bundles&lt;/code> is the new feature which let you track an object which represented by multiple tags to overcome occlusion and such. Upon detection of a single or multiple tags in the bundle, the software will report the 6 DOF pose of the bundle&amp;rsquo;s origin. When we create a bundle you specify a list of tags. Each tag has a tag ID, size, and 6 DOF location of the tag in reference to the bundle&amp;rsquo;s origin.&lt;/p>
+&lt;p>Important notes mentioned by the authors:&lt;/p>
+&lt;ul>
+&lt;li>No tag ID should appear twice with different sizes (this creates ambiguity in the detection)&lt;/li>
+&lt;li>No tag ID should appear twice in the image (this creates ambiguity in the detection)&lt;/li>
+&lt;li>It is fine for a tag with the same ID to be listed both in standalone_tags and in tag_bundles, as long as it has the same size.&lt;/li>
+&lt;/ul>
+&lt;p>A complete &lt;code>launch&lt;/code> file which:&lt;/p>
+&lt;ul>
+&lt;li>Open the camera stream from the &lt;code>video_device&lt;/code> with &lt;code>width&lt;/code> and &lt;code>height&lt;/code> parameters.&lt;/li>
+&lt;li>Launch the &lt;code>image_proc&lt;/code> node to remove distortions.&lt;/li>
+&lt;li>Load the &lt;code>settings.yaml&lt;/code> and &lt;code>tags.yaml&lt;/code> configurations files to the parameters server.&lt;/li>
+&lt;li>Run the &lt;code>apriltag_ros&lt;/code> core node and publish the detected transformation.&lt;/li>
+&lt;/ul>
 &lt;/p>
 &lt;/details>
 &lt;details class="spoiler " id="spoiler-2">
