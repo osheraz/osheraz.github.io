@@ -75,6 +75,15 @@ Most of the videos and figures are taken from the authors implementation and are
 &lt;li>&lt;a href="https://github.com/AprilRobotics/apriltag-generation">AprilTag-Generation&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://berndpfrommer.github.io/tagslam_web/making_tags/">Making and Using AprilTags&lt;/a>&lt;/li>
 &lt;/ul>
+&lt;h4 id="measuring-the-tag-size">Measuring the tag Size&lt;/h4>
+&lt;p>When entering (ill explain it later) the size of your tag for pose estimation it is important to know what &amp;ldquo;size&amp;rdquo; is actually a measure of. The measurement that is called &amp;ldquo;size&amp;rdquo; is shown as &amp;ldquo;edge length&amp;rdquo; in the image below.
+The tag size should not be measured from the outside of the tag. The tag size is defined as the distance between the detection corners, or alternately, the length of the edge between the white border and the black border. The following illustration marks the detection corners with red &lt;code>X&lt;/code>s and the tag size with a red arrow for a tag from the 48h12Custom tag family.&lt;/p>
+&lt;p align="center">
+&lt;img src="./april_size.png" width=30% />
+&lt;/p>
+&lt;p align="center">
+&lt;img src="./tag_size_april.jpg" width=60% />
+&lt;/p>
 &lt;p align="center">
 &lt;img src="./april.png" />
 &lt;/p>
@@ -90,6 +99,42 @@ Most of the videos and figures are taken from the authors implementation and are
 &lt;li>&lt;code>/tag_detections&lt;/code>: the same information as provided by the &lt;code>/tf&lt;/code> topic but as a custom message carrying the tag ID(s), size(s) and &lt;code>geometry_msgs/PoseWithCovarianceStamped&lt;/code> pose information.&lt;/li>
 &lt;li>&lt;code>/tag_detections_image&lt;/code>: the same image as input by &lt;code>/camera/image_rect&lt;/code> but with the detected tags highlighted.&lt;/li>
 &lt;/ul>
+&lt;h4 id="settingsyaml-parameters">settings.yaml parameters&lt;/h4>
+&lt;p>this file configures the detection algorithm parameters (most are self-explained)&lt;/p>
+&lt;pre>&lt;code>tag_family: 'tag36h11' # Tag family
+tag_border: 1 # Size (in bits) of the black border. Always 1 if made by optitag
+tag_threads: 2 # Number of detection thread. Tune per your CPU
+tag_decimate: 1.0 # Reduce the resolution of the image by this number. Increases speed at the sacrifice of detecting smaller tags
+tag_blur: 0.0 # tag_blur&amp;gt;0 blurs the image and tag_blur&amp;lt;0 sharpens the image
+tag_refine_edges: 1 # improves edge detection and therefore improves pose estimation. Light computation
+tag_refine_decode: 0 # reduces false negative detection rate. Medium computation
+tag_refine_pose: 0 # improves pose estimation accuracy. Heavy computation
+tag_debug: 0 # save debug images to ~/.ros Careful if running with video
+publish_tf: true # publish tag/bundle poses to /tf topic
+&lt;/code>&lt;/pre>
+&lt;h4 id="tagsyaml-parameters">tags.yaml parameters&lt;/h4>
+&lt;p>This file tells the algorithm what tags to look for in the environment and how large they are so they can be placed in 3D space. The software assumes distance measurements are in &lt;code>meters&lt;/code> and orientation is in &lt;code>quaternions&lt;/code> (One can use &lt;code>tf.transformation&lt;/code> package for other transformations)&lt;/p>
+&lt;pre>&lt;code>standalone_tags:
+[
+{id: 10, size: 0.15},
+{id: 20, size: 0.1},
+{id: 30, size: 0.07}
+]
+tag_bundles:
+[
+{
+name: 'my_bundle',
+layout:
+[
+{id: 0, size: 0.05, x: 0.0000, y: 0.0000, z: 0.0, qw: 1.0, qx: 0.0, qy: 0.0, qz: 0.0},
+{id: 4, size: 0.05, x: 0.0548, y: -0.0522, z: 0.0, qw: 1.0, qx: 0.0, qy: 0.0, qz: 0.0},
+{id: 3, size: 0.05, x: -0.0580, y: -0.0553, z: 0.0, qw: 1.0, qx: 0.0, qy: 0.0, qz: 0.0},
+{id: 2, size: 0.05, x: 0.0543, y: 0.0603, z: 0.0, qw: 1.0, qx: 0.0, qy: 0.0, qz: 0.0},
+{id: 1, size: 0.05, x: -0.0582, y: 0.0573, z: 0.0, qw: 1.0, qx: 0.0, qy: 0.0, qz: 0.0}
+]
+}
+]
+&lt;/code>&lt;/pre>
 &lt;/p>
 &lt;/details>
 &lt;details class="spoiler " id="spoiler-2">
