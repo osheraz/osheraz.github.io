@@ -41,4 +41,16 @@ $l(m_{i}|z_{1:t},x_{1:t}) = l(m_{i}|z_{t},x_{t}) + l(m_{i}|z_{1:t−1},x_{1:t−
 &lt;/li>
 &lt;/ol>
 &lt;/p>
+&lt;/details>
+&lt;details class="spoiler " id="spoiler-1">
+&lt;summary>Project No.2&lt;/summary>
+&lt;p>Todo.&lt;/p>
+&lt;/details>
+&lt;details class="spoiler " id="spoiler-2">
+&lt;summary>Project No.4&lt;/summary>
+&lt;p>Todo.&lt;/p>
+&lt;/details>
+&lt;details class="spoiler " id="spoiler-3">
+&lt;summary>Project No.4&lt;/summary>
+&lt;p>Todo.&lt;/p>
 &lt;/details></description></item></channel></rss>
