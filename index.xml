@@ -160,7 +160,7 @@ $l(m_{i}|z_{1:t},x_{1:t}) = l(m_{i}|z_{t},x_{t}) + l(m_{i}|z_{1:t−1},x_{1:t−
 &lt;sub>&lt;sup>Image courtesy to TagSlam&lt;/sup>&lt;/sub>
 &lt;/p>
 &lt;br />
-&lt;p>Throughout my research, I had to track the $SE(3)$ pose of an object for various of application. In this post ill summarize the &lt;code>ROS&lt;/code>-based implementation of some of the methods. Basically, most of the marker-based methods that ill cover only requires a USB-Cam, except the last one, which requires the whole &lt;code>OptiTrack&lt;/code> motion captures system. We uses &lt;code>OptiTrack&lt;/code> at the lab for for the finer applications.&lt;/p>
+&lt;p>Throughout my research, I had to track the $SE(3)$ pose of various objects for several applications. In this post ill summarize the &lt;code>ROS&lt;/code>-based implementation of some of the \hl{marker}-based methods. Basically, most of the marker-based methods that ill cover only requires a USB-Cam, except the last one, which requires the whole &lt;code>OptiTrack&lt;/code> motion captures system. We uses &lt;code>OptiTrack&lt;/code> at the lab for for the finer applications.&lt;/p>
 &lt;div class="alert alert-note">
 &lt;div>
 Most of the videos, figures and explanation are taken from the authors implementation and are not mine. I just gather them for future use.
