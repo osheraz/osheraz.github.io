@@ -298,7 +298,6 @@ achieved impressive performance on a wide spectrum of tasks. However, Quantifyin
 &lt;p>\begin{equation}
 \mathcal{L}(\theta)=-\log{p_\theta(y|z)}=\frac{\log{\sigma^{2}_\theta(z)}}{2}+\frac{(y}-\mu_\theta(z))^{2}}{2}+ const.
 \end{equation}&lt;/p>
-&lt;p>&lt;br />&lt;/p>
 &lt;p>During training we initialized each model $p_\theta^m$ with different random initialization parameters and different batch of the data and treated each ensemble as a Guassian mixture model. Each ensemble is then treated as Gaussian mixture model:
 \begin{equation}
 \mathcal{N}(\mu(z),\sigma^{2}(z)) = M^{-1}\sum_{m}{p_{\theta_m} (y|z)}
