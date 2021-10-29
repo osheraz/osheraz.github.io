@@ -282,4 +282,29 @@ Identifying and tracking the pose of &lt;code>bundles&lt;/code> consisting of mu
 &lt;details class="spoiler " id="spoiler-4">
 &lt;summary>OptiTrack&lt;/summary>
 &lt;p>Todo.&lt;/p>
-&lt;/details></description></item></channel></rss>
+&lt;/details></description></item><item><title>Uncertainty propagation in Deep Neural Networks using Ensembles</title><link>https://osheraz.github.io/blog/ens/</link><pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate><guid>https://osheraz.github.io/blog/ens/</guid><description>&lt;p align="center">
+&lt;img src="./prop.png" width=60% />
+&lt;/p>
+&lt;p>&lt;br />&lt;/p>
+&lt;div class="alert alert-note">
+&lt;div>
+This post is mainly reproduction of the paper: &lt;code>Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles (DeepMind, NIPS 2017)&lt;/code>
+&lt;/div>
+&lt;/div>
+&lt;p>Deep neural networks (NNs) are powerful black box predictors that have recently
+achieved impressive performance on a wide spectrum of tasks. However, Quantifying their predictive uncertainty is still challenging. &lt;code>Bayesian approximation&lt;/code> and &lt;code>ensemble learning&lt;/code> techniques are two of the most widely-used uncertainty evaluation methods in the literature. In this post ill discuss the implementation of one of the simplest method (which still got great results) to create a deep neural network for estimating predictive uncertainty. To account for uncertainty, the authors suggested to use a proper scoring rule.&lt;/p>
+&lt;p>Such probabilistic models capture the inherent ambiguity in outputs for a given input (aleatoric uncertainty) and ensembles to capture subjective uncertainty (epistemic uncertainty). To that aim, we used a Gaussian parameterization of the form $p_\theta(y|z)=\mathcal{N}(\mu_\theta(z),,\Sigma_\theta(z))$ where $y$ is the output and $z$ is the input respectively. The mean $\mu_\theta(z)$ and diagonal covariance $\Sigma_\theta(z)$ is given by a neural network. Deterministic NN simply outputs the mean value $\mu_\theta(z)$, using mean squred error as the loss fucntion during training $\mathcal{L}(\theta)= \sum_{n}(y-\mu(z))^{2}$. For probalistic NN, we treat the input $z$ as a sample from Gaussian distribution, while using a negative log-likelihood loss function $\mathcal{L}(\theta)=-\log{p_\theta(y|z)}$
+\begin{equation}
+\mathcal{L}(\theta)=-\log{p_\theta(x_{i+1}|x_i,a_i)}=\frac{\log{\sigma^{2}_\theta(x_i,a_i)}}{2}+\frac{(x_{i+1}-\mu_\theta(x_i,a_i))^{2}}{2}+ const.
+\end{equation}
+During training we initialized each model $p_\theta^m$ with different random initialization parameters and different batch of the data and treated each ensemble as a Guassian mixture model. % Each ensemble is then treated as Gaussian mixture model:
+\begin{equation}
+\mathcal{N}(\mu(x_i,a_i),\sigma^{2}(x_i,a_i)) = M^{-1}\sum_{m}{p_{\theta_m} (x_{i+1}|x_i,a_i)}
+\end{equation}
+where the mean and variance of the mixture is given by:
+\begin{equation}
+\mu(x_i,a_i) = M^{-1}\sum_{m}\mu_{\theta_m}(x_i,a_i)
+\end{equation}
+\begin{equation}
+\sigma^{2}(x_i,a_i) = M^{-1}\sum_{m}(\sigma^{2}_{\theta_m}(x_i,a_i)+\mu^{2}_{\theta_m}(x_i,a_i)) - \mu(x_i,a_i)
+\end{equation}&lt;/p></description></item></channel></rss>
