@@ -2,8 +2,8 @@
 <span><i class="fas fa-bars"></i></span></button><div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none"><a class=navbar-brand href=/>Osher Azulay</a></div><div class="navbar-collapse main-menu-item collapse justify-content-start" id=navbar-content><ul class="navbar-nav d-md-inline-flex"><li class=nav-item><a class=nav-link href=/#about><span>Home</span></a></li><li class=nav-item><a class=nav-link href=/#featured><span>Publications</span></a></li><li class=nav-item><a class="nav-link active" href=/blog/><span>Under Construction</span></a></li></ul></div><ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2"><li class=nav-item><a class="nav-link js-search" href=# aria-label=Search><i class="fas fa-search" aria-hidden=true></i></a></li><li class="nav-item dropdown theme-dropdown"><a href=# class=nav-link data-toggle=dropdown aria-haspopup=true aria-label="Display preferences"><i class="fas fa-moon" aria-hidden=true></i></a><div class=dropdown-menu><a href=# class="dropdown-item js-set-theme-light"><span>Light</span></a>
 <a href=# class="dropdown-item js-set-theme-dark"><span>Dark</span></a>
 <a href=# class="dropdown-item js-set-theme-auto"><span>Automatic</span></a></div></li></ul></div></nav></div><div class=page-body><article class=article><div class="article-container pt-3"><h1>Uncertainty propagation in Deep Neural Networks using Ensembles</h1><p class=page-subtitle></p><div class=article-metadata><div><span>Osher Azulay</span></div><span class=article-date>Last updated on
-Sep 5, 2019</span></div></div><div class=article-container><div class=article-style><p align=center><img src=./prop.png width=60%></p><p><br></p><div class="alert alert-note"><div>This post is mainly reproduction of the paper: <code>Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles (DeepMind, NIPS 2017)</code></div></div><p>Deep neural networks (NNs) are powerful black box predictors that have recently
-achieved impressive performance on a wide spectrum of tasks. However, Quantifying their predictive uncertainty is still challenging. <code>Bayesian approximation</code> and <code>ensemble learning</code> techniques are two of the most widely-used uncertainty evaluation methods in the literature. In this post ill discuss the implementation of one of the simplest method (which still got great results) to create a deep neural network for estimating predictive uncertainty.</p><p><br></p><p>Such probabilistic models capture the inherent ambiguity in outputs for a given input (aleatoric uncertainty) and ensembles to capture subjective uncertainty (epistemic uncertainty). To that aim, we use a Gaussian parameterization of the form $p_\theta(y|z)=\mathcal{N}(\mu_\theta(z),\Sigma_\theta(z))$ where $y$ is the output and $z$ is the input respectively. The mean $\mu_\theta(z)$ and diagonal covariance $\Sigma_\theta(z)$ is given by a neural network. With deterministic NN, we can simply output the mean value $\mu_\theta(z)$, using <code>mean squared error</code> as the loss function during training $\mathcal{L}(\theta)= \sum_{n}(y-\mu(z))^{2}$. For probalistic NN, we treat the input $z$ as a sample from Gaussian distribution, while using a <code>negative log-likelihood loss</code> function:
+Sep 5, 2019</span></div></div><div class=article-container><div class=article-style><p align=center><img src=./prop.png width=60%></p><p><br></p><div class="alert alert-note"><div>This outputt is mainly reproduction of the paper: <code>Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles (DeepMind, NIPS 2017)</code></div></div><p>Deep neural networks (NNs) are powerful black box predictors that have recently
+achieved impressive performance on a wide spectrum of tasks. However, Quantifying their predictive uncertainty is still challenging. <code>Bayesian approximation</code> and <code>ensemble learning</code> techniques are two of the most widely-used uncertainty evaluation methods in the literature. In this outputt ill discuss the implementation of one of the simplest method (which still got great results) to create a deep neural network for estimating predictive uncertainty.</p><p><br></p><p>Such probabilistic models capture the inherent ambiguity in outputs for a given input (aleatoric uncertainty) and ensembles to capture subjective uncertainty (epistemic uncertainty). To that aim, we use a Gaussian parameterization of the form $p_\theta(y|z)=\mathcal{N}(\mu_\theta(z),\Sigma_\theta(z))$ where $y$ is the output and $z$ is the input respectively. The mean $\mu_\theta(z)$ and diagonal covariance $\Sigma_\theta(z)$ is given by a neural network. With deterministic NN, we can simply output the mean value $\mu_\theta(z)$, using <code>mean squared error</code> as the loss function during training $\mathcal{L}(\theta)= \sum_{n}(y-\mu(z))^{2}$. For probalistic NN, we treat the input $z$ as a sample from Gaussian distribution, while using a <code>negative log-likelihood loss</code> function:
 \begin{equation}
 \mathcal{L}(\theta)=-\log{p_\theta(y|z)}=\frac{\log{\sigma^{2}_\theta(zi)}}{2}+\frac{(y-\mu_\theta(z))^{2}}{2}+ const.
 \end{equation}</p><p align=center><img src=./ens1.png width=80%></p><p>During training we initialized each model $p_\theta^m$ with different random initialization parameters and different batch of the data and treated each ensemble as a Guassian mixture model. Each ensemble is then treated as Gaussian mixture model:
@@ -70,13 +70,13 @@ import torch.nn as nn
     def restore(self, filepath):
         self.load_state_dict(torch.load(filepath))
 
-</code></pre><p>Then we will create the model:</p><pre><code>class InverseModel:
+</code></pre><p>Then we will create the model:</p><pre><code>class Model:
     def __init__(self, out_dim, ob_dim, n_layers, size, device, deterministic, optimizer,dropout_p, learning_rate = 0.001):
         # init vars
         self.device = device
         self.deterministic = deterministic
 
-        self.inv_func = MLP(input_dim = ob_dim,
+        self.mlp = MLP(input_dim = ob_dim,
                               output_dim = out_dim,
                               n_layers = n_layers,
                               size = size,
@@ -85,7 +85,7 @@ import torch.nn as nn
                               dropout_p= dropout_p)
 
 
-        self.optimizer = getattr(torch.optim, optimizer)(self.inv_func.parameters(), lr = learning_rate, weight_decay=1e-5)
+        self.optimizer = getattr(torch.optim, optimizer)(self.mlp.parameters(), lr = learning_rate, weight_decay=1e-5)
 
     #############################
 
@@ -97,25 +97,25 @@ import torch.nn as nn
         obs = torch.Tensor(obs).to(self.device)
 
         if self.deterministic:
-            pos = self.inv_func(obs).cpu().detach().numpy()
-            return pos
+            output = self.mlp(obs).cpu().detach().numpy()
+            return output
         else:
-            out = self.inv_func(obs)
-            pos_mean, pos_var = out[0].cpu().detach().numpy(), out[1].cpu().detach().numpy()
-            return pos_mean, pos_var
+            out = self.mlp(obs)
+            output_mean, output_var = out[0].cpu().detach().numpy(), out[1].cpu().detach().numpy()
+            return output_mean, output_var
 
-    def update(self, observations, true_pos):
+    def update(self, observations, true_output):
 
-        pred_pos = self.inv_func(torch.Tensor(observations).to(self.device))
-        true_pos = torch.Tensor(true_pos).to(self.device)
+        pred_output = self.mlp(torch.Tensor(observations).to(self.device))
+        true_output = torch.Tensor(true_output).to(self.device)
 
         if self.deterministic:
-            loss = nn.functional.mse_loss(true_pos, pred_pos)
+            loss = nn.functional.mse_loss(true_output, pred_output)
         else:
             # Negative log-likelihood loss function.
-            mean = pred_pos[0]
-            var = pred_pos[1]
-            loss = torch.mean(0.5*torch.log(var) + 0.5*((true_pos - mean).pow(2))/var)#.sum()
+            mean = pred_output[0]
+            var = pred_output[1]
+            loss = torch.mean(0.5*torch.log(var) + 0.5*((true_output - mean).pow(2))/var)#.sum()
 
         self.optimizer.zero_grad()
         loss.backward()
@@ -123,38 +123,38 @@ import torch.nn as nn
 
         return loss.item()
 
-    def eval(self, observations, true_pos):
+    def eval(self, observations, true_output):
 
         with torch.no_grad():
-            pred_pos = self.inv_func(torch.Tensor(observations).to(self.device))
+            pred_output = self.mlp(torch.Tensor(observations).to(self.device))
 
-        true_pos = torch.Tensor(true_pos).to(self.device)
+        true_output = torch.Tensor(true_output).to(self.device)
 
         if self.deterministic:
-            loss = nn.functional.mse_loss(true_pos, pred_pos)
+            loss = nn.functional.mse_loss(true_output, pred_output)
         else:
             # Negative log-likelihood loss function.
-            mean = pred_pos[0]
-            var = pred_pos[1]
-            loss = torch.mean(0.5*torch.log(var) + 0.5*((true_pos - mean).pow(2))/var)#.sum()
+            mean = pred_output[0]
+            var = pred_output[1]
+            loss = torch.mean(0.5*torch.log(var) + 0.5*((true_output - mean).pow(2))/var)#.sum()
 
         return loss.item()
 
     def save_model(self,path):
-        self.inv_func.save(path)
+        self.mlp.save(path)
 
     def load_model(self,path):
-        self.inv_func.restore(path)
-</code></pre><p>And finally the Ensemble class:</p><pre><code>class InvEnsemble():
+        self.mlp.restore(path)
+</code></pre><p>And finally the Ensemble class:</p><pre><code>class ModelEnsemble():
     def __init__(self, params):
-        # super(InvEnsemble, self).__init__()
+        # super(ModelEnsemble, self).__init__()
 
         self.params = params
         self.ensemble_size = self.params['ensemble_size']
 
-        self.inv_models = []
+        self.models = []
         for i in range(self.ensemble_size):
-            model = InverseModel(self.params['out_dim'],
+            model = Model(self.params['out_dim'],
                             self.params['obs_dim'],
                             self.params['n_layers'],
                             self.params['size'],
@@ -164,21 +164,21 @@ import torch.nn as nn
                             self.params['dropout_p'],
                             self.params['learning_rate'])
 
-            self.inv_models.append(model)
+            self.models.append(model)
 
     def forward(self,  obs):
         means = []
         variances = []
-        poses = []
+        outputes = []
 
-        if self.inv_models[0].deterministic:
-            for model in self.inv_models:
-                pos = model.get_prediction(obs)
-                poses.append(pos)
-            mean = np.mean(poses, axis=0)
-            variance = np.var(poses, axis=0,ddof=1)
+        if self.models[0].deterministic:
+            for model in self.models:
+                output = model.get_prediction(obs)
+                outputes.append(output)
+            mean = np.mean(outputes, axis=0)
+            variance = np.var(outputes, axis=0,ddof=1)
         else:
-            for model in self.inv_models:
+            for model in self.models:
                 mean_m, var_m = model.get_prediction(obs)
                 means.append(mean_m)
                 variances.append(var_m)
@@ -187,7 +187,7 @@ import torch.nn as nn
 
         return mean, variance
 
-    def train(self, obs, pos):
+    def train(self, obs, output):
 
         # TODO: each model in the ensemble is trained on a different random batch of size batch_size
         losses = []
@@ -195,15 +195,15 @@ import torch.nn as nn
         num_data_per_ens = int(num_data / self.ensemble_size)
 
         start = 0
-        for model in self.inv_models:
+        for model in self.models:
             # select which datapoints to use for this model of the ensemble
             finish = start + num_data_per_ens
 
             observations = obs[start:finish]
-            poses = pos[start:finish]
+            outputes = output[start:finish]
 
-            # use datapoints to update one of the inv_models
-            loss = model.update(observations, poses)
+            # use datapoints to update one of the models
+            loss = model.update(observations, outputes)
             losses.append(loss)
 
             start = finish
@@ -212,22 +212,22 @@ import torch.nn as nn
 
         return avg_loss
 
-    def eval(self, obs, pos):
+    def eval(self, obs, output):
 
         losses = []
         num_data = obs.shape[0]
         num_data_per_ens = int(num_data / self.ensemble_size)
 
         start = 0
-        for model in self.inv_models:
+        for model in self.models:
             # select which datapoints to use for this model of the ensemble
             finish = start + num_data_per_ens
 
             observations = obs[start:finish]
-            poses = pos[start:finish]
+            outputes = output[start:finish]
 
-            # use datapoints to update one of the inv_models
-            loss = model.eval(observations, poses)
+            # use datapoints to update one of the models
+            loss = model.eval(observations, outputes)
             losses.append(loss)
 
             start = finish
@@ -237,14 +237,14 @@ import torch.nn as nn
         return avg_loss
 
     def save_models(self,path):
-        for i, model in enumerate(self.inv_models):
+        for i, model in enumerate(self.models):
             model.save_model(path + str(i))
 
     def load_models(self,path):
 
-        self.inv_models = []
+        self.models = []
         for i in range(self.ensemble_size):
-            model = InverseModel(self.params['out_dim'],
+            model = Model(self.params['out_dim'],
                             self.params['obs_dim'],
                             self.params['n_layers'],
                             self.params['size'],
@@ -254,7 +254,7 @@ import torch.nn as nn
                             self.params['dropout_p'],
                             self.params['learning_rate'])
             model.load_model(path + str(i))
-            self.inv_models.append(model)
+            self.models.append(model)
 </code></pre></div><div class=share-box aria-hidden=true><ul class=share><li><a href="https://twitter.com/intent/tweet?url=https://osheraz.github.io/blog/ens/&text=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-twitter><i class="fab fa-twitter"></i></a></li><li><a href="https://www.facebook.com/sharer.php?u=https://osheraz.github.io/blog/ens/&t=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-facebook><i class="fab fa-facebook"></i></a></li><li><a href="mailto:?subject=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles&body=https://osheraz.github.io/blog/ens/" target=_blank rel=noopener class=share-btn-email><i class="fas fa-envelope"></i></a></li><li><a href="https://www.linkedin.com/shareArticle?url=https://osheraz.github.io/blog/ens/&title=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-linkedin><i class="fab fa-linkedin-in"></i></a></li><li><a href="whatsapp://send?text=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles%20https://osheraz.github.io/blog/ens/" target=_blank rel=noopener class=share-btn-whatsapp><i class="fab fa-whatsapp"></i></a></li><li><a href="https://service.weibo.com/share/share.php?url=https://osheraz.github.io/blog/ens/&title=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-weibo><i class="fab fa-weibo"></i></a></li></ul></div><div class="media author-card content-widget-hr"><a href=https://osheraz.github.io/><img class="avatar mr-3 avatar-circle" src=/authors/osher-azulay/avatar_hub134170bfb8ac65f2ae4f5f140cab5f2_67039_270x270_fill_q75_lanczos_center.jpg alt="Osher Azulay"></a><div class=media-body><h5 class=card-title><a href=https://osheraz.github.io/>Osher Azulay</a></h5><h6 class=card-subtitle>Roboticist</h6><p class=card-text>My research interests include robotic manipulation, deep reinforcement learning.</p><ul class=network-icon aria-hidden=true><li><a href=/#contact><i class="fas fa-envelope"></i></a></li><li><a href=https://github.com/osheraz target=_blank rel=noopener><i class="fab fa-github"></i></a></li><li><a href=https://www.linkedin.com/in/osher-azulay-20ab38154/ target=_blank rel=noopener><i class="fab fa-linkedin"></i></a></li></ul></div></div></div></article></div><div class=page-footer><div class=container><footer class=site-footer><p class=powered-by>Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target=_blank rel=noopener>Wowchemy</a> — the free, <a href=https://github.com/wowchemy/wowchemy-hugo-modules target=_blank rel=noopener>open source</a> website builder that empowers creators.</p></footer></div></div><div id=modal class="modal fade" role=dialog><div class=modal-dialog><div class=modal-content><div class=modal-header><h5 class=modal-title>Cite</h5><button type=button class=close data-dismiss=modal aria-label=Close>
 <span aria-hidden=true>&#215;</span></button></div><div class=modal-body><pre><code class="tex hljs"></code></pre></div><div class=modal-footer><a class="btn btn-outline-primary my-1 js-copy-cite" href=# target=_blank><i class="fas fa-copy"></i> Copy</a>
 <a class="btn btn-outline-primary my-1 js-download-cite" href=# target=_blank><i class="fas fa-download"></i> Download</a><div id=modal-error></div></div></div></div></div><script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js integrity="sha512-TDKKr+IvoqZnPzc3l35hdjpHD0m+b2EC2SrLEgKDRWpxf2rFCxemkgvJ5kfU48ip+Y+m2XVKyOCD85ybtlZDmw==" crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/r.min.js></script><script id=search-hit-fuse-template type=text/x-template>

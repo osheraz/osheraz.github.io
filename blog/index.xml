@@ -288,11 +288,11 @@ Identifying and tracking the pose of &lt;code>bundles&lt;/code> consisting of mu
 &lt;p>&lt;br />&lt;/p>
 &lt;div class="alert alert-note">
 &lt;div>
-This post is mainly reproduction of the paper: &lt;code>Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles (DeepMind, NIPS 2017)&lt;/code>
+This outputt is mainly reproduction of the paper: &lt;code>Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles (DeepMind, NIPS 2017)&lt;/code>
 &lt;/div>
 &lt;/div>
 &lt;p>Deep neural networks (NNs) are powerful black box predictors that have recently
-achieved impressive performance on a wide spectrum of tasks. However, Quantifying their predictive uncertainty is still challenging. &lt;code>Bayesian approximation&lt;/code> and &lt;code>ensemble learning&lt;/code> techniques are two of the most widely-used uncertainty evaluation methods in the literature. In this post ill discuss the implementation of one of the simplest method (which still got great results) to create a deep neural network for estimating predictive uncertainty.&lt;/p>
+achieved impressive performance on a wide spectrum of tasks. However, Quantifying their predictive uncertainty is still challenging. &lt;code>Bayesian approximation&lt;/code> and &lt;code>ensemble learning&lt;/code> techniques are two of the most widely-used uncertainty evaluation methods in the literature. In this outputt ill discuss the implementation of one of the simplest method (which still got great results) to create a deep neural network for estimating predictive uncertainty.&lt;/p>
 &lt;p>&lt;br />&lt;/p>
 &lt;p>Such probabilistic models capture the inherent ambiguity in outputs for a given input (aleatoric uncertainty) and ensembles to capture subjective uncertainty (epistemic uncertainty). To that aim, we use a Gaussian parameterization of the form $p_\theta(y|z)=\mathcal{N}(\mu_\theta(z),\Sigma_\theta(z))$ where $y$ is the output and $z$ is the input respectively. The mean $\mu_\theta(z)$ and diagonal covariance $\Sigma_\theta(z)$ is given by a neural network. With deterministic NN, we can simply output the mean value $\mu_\theta(z)$, using &lt;code>mean squared error&lt;/code> as the loss function during training $\mathcal{L}(\theta)= \sum_{n}(y-\mu(z))^{2}$. For probalistic NN, we treat the input $z$ as a sample from Gaussian distribution, while using a &lt;code>negative log-likelihood loss&lt;/code> function:
 \begin{equation}
@@ -362,71 +362,71 @@ def restore(self, filepath):
 self.load_state_dict(torch.load(filepath))
 &lt;/code>&lt;/pre>
 &lt;p>Then we will create the model:&lt;/p>
-&lt;pre>&lt;code>class InverseModel:
+&lt;pre>&lt;code>class Model:
 def __init__(self, out_dim, ob_dim, n_layers, size, device, deterministic, optimizer,dropout_p, learning_rate = 0.001):
 # init vars
 self.device = device
 self.deterministic = deterministic
-self.inv_func = MLP(input_dim = ob_dim,
+self.mlp = MLP(input_dim = ob_dim,
 output_dim = out_dim,
 n_layers = n_layers,
 size = size,
 device = self.device,
 deterministic = deterministic,
 dropout_p= dropout_p)
-self.optimizer = getattr(torch.optim, optimizer)(self.inv_func.parameters(), lr = learning_rate, weight_decay=1e-5)
+self.optimizer = getattr(torch.optim, optimizer)(self.mlp.parameters(), lr = learning_rate, weight_decay=1e-5)
 #############################
 def get_prediction(self, obs):
 if len(obs.shape) == 1:
 obs = np.squeeze(obs)[None]
 obs = torch.Tensor(obs).to(self.device)
 if self.deterministic:
-pos = self.inv_func(obs).cpu().detach().numpy()
-return pos
+output = self.mlp(obs).cpu().detach().numpy()
+return output
 else:
-out = self.inv_func(obs)
-pos_mean, pos_var = out[0].cpu().detach().numpy(), out[1].cpu().detach().numpy()
-return pos_mean, pos_var
-def update(self, observations, true_pos):
-pred_pos = self.inv_func(torch.Tensor(observations).to(self.device))
-true_pos = torch.Tensor(true_pos).to(self.device)
+out = self.mlp(obs)
+output_mean, output_var = out[0].cpu().detach().numpy(), out[1].cpu().detach().numpy()
+return output_mean, output_var
+def update(self, observations, true_output):
+pred_output = self.mlp(torch.Tensor(observations).to(self.device))
+true_output = torch.Tensor(true_output).to(self.device)
 if self.deterministic:
-loss = nn.functional.mse_loss(true_pos, pred_pos)
+loss = nn.functional.mse_loss(true_output, pred_output)
 else:
 # Negative log-likelihood loss function.
-mean = pred_pos[0]
-var = pred_pos[1]
-loss = torch.mean(0.5*torch.log(var) + 0.5*((true_pos - mean).pow(2))/var)#.sum()
+mean = pred_output[0]
+var = pred_output[1]
+loss = torch.mean(0.5*torch.log(var) + 0.5*((true_output - mean).pow(2))/var)#.sum()
 self.optimizer.zero_grad()
 loss.backward()
 self.optimizer.step()
 return loss.item()
-def eval(self, observations, true_pos):
+def eval(self, observations, true_output):
 with torch.no_grad():
-pred_pos = self.inv_func(torch.Tensor(observations).to(self.device))
-true_pos = torch.Tensor(true_pos).to(self.device)
+pred_output = self.mlp(torch.Tensor(observations).to(self.device))
+true_output = torch.Tensor(true_output).to(self.device)
 if self.deterministic:
-loss = nn.functional.mse_loss(true_pos, pred_pos)
+loss = nn.functional.mse_loss(true_output, pred_output)
 else:
 # Negative log-likelihood loss function.
-mean = pred_pos[0]
-var = pred_pos[1]
-loss = torch.mean(0.5*torch.log(var) + 0.5*((true_pos - mean).pow(2))/var)#.sum()
+mean = pred_output[0]
+var = pred_output[1]
+loss = torch.mean(0.5*torch.log(var) + 0.5*((true_output - mean).pow(2))/var)#.sum()
 return loss.item()
 def save_model(self,path):
-self.inv_func.save(path)
+self.mlp.save(path)
 def load_model(self,path):
-self.inv_func.restore(path)
+self.mlp.restore(path)
 &lt;/code>&lt;/pre>
 &lt;p>And finally the Ensemble class:&lt;/p>
-&lt;pre>&lt;code>class InvEnsemble():
+&lt;pre>&lt;code>class ModelEnsemble():
 def __init__(self, params):
-# super(InvEnsemble, self).__init__()
+# super(ModelEnsemble, self).__init__()
 self.params = params
 self.ensemble_size = self.params['ensemble_size']
-self.inv_models = []
+self.models = []
 for i in range(self.ensemble_size):
-model = InverseModel(self.params['out_dim'],
+model = Model(self.params['out_dim'],
 self.params['obs_dim'],
 self.params['n_layers'],
 self.params['size'],
@@ -435,65 +435,65 @@ self.params['deterministic'],
 self.params['optimizer'],
 self.params['dropout_p'],
 self.params['learning_rate'])
-self.inv_models.append(model)
+self.models.append(model)
 def forward(self, obs):
 means = []
 variances = []
-poses = []
-if self.inv_models[0].deterministic:
-for model in self.inv_models:
-pos = model.get_prediction(obs)
-poses.append(pos)
-mean = np.mean(poses, axis=0)
-variance = np.var(poses, axis=0,ddof=1)
+outputes = []
+if self.models[0].deterministic:
+for model in self.models:
+output = model.get_prediction(obs)
+outputes.append(output)
+mean = np.mean(outputes, axis=0)
+variance = np.var(outputes, axis=0,ddof=1)
 else:
-for model in self.inv_models:
+for model in self.models:
 mean_m, var_m = model.get_prediction(obs)
 means.append(mean_m)
 variances.append(var_m)
 mean = np.mean(means, axis=0)
 variance = np.mean((variances + np.power(means, 2)), axis=0) - np.power(mean, 2)
 return mean, variance
-def train(self, obs, pos):
+def train(self, obs, output):
 # TODO: each model in the ensemble is trained on a different random batch of size batch_size
 losses = []
 num_data = obs.shape[0]
 num_data_per_ens = int(num_data / self.ensemble_size)
 start = 0
-for model in self.inv_models:
+for model in self.models:
 # select which datapoints to use for this model of the ensemble
 finish = start + num_data_per_ens
 observations = obs[start:finish]
-poses = pos[start:finish]
-# use datapoints to update one of the inv_models
-loss = model.update(observations, poses)
+outputes = output[start:finish]
+# use datapoints to update one of the models
+loss = model.update(observations, outputes)
 losses.append(loss)
 start = finish
 avg_loss = np.mean(losses)
 return avg_loss
-def eval(self, obs, pos):
+def eval(self, obs, output):
 losses = []
 num_data = obs.shape[0]
 num_data_per_ens = int(num_data / self.ensemble_size)
 start = 0
-for model in self.inv_models:
+for model in self.models:
 # select which datapoints to use for this model of the ensemble
 finish = start + num_data_per_ens
 observations = obs[start:finish]
-poses = pos[start:finish]
-# use datapoints to update one of the inv_models
-loss = model.eval(observations, poses)
+outputes = output[start:finish]
+# use datapoints to update one of the models
+loss = model.eval(observations, outputes)
 losses.append(loss)
 start = finish
 avg_loss = np.mean(losses)
 return avg_loss
 def save_models(self,path):
-for i, model in enumerate(self.inv_models):
+for i, model in enumerate(self.models):
 model.save_model(path + str(i))
 def load_models(self,path):
-self.inv_models = []
+self.models = []
 for i in range(self.ensemble_size):
-model = InverseModel(self.params['out_dim'],
+model = Model(self.params['out_dim'],
 self.params['obs_dim'],
 self.params['n_layers'],
 self.params['size'],
@@ -503,5 +503,5 @@ self.params['optimizer'],
 self.params['dropout_p'],
 self.params['learning_rate'])
 model.load_model(path + str(i))
-self.inv_models.append(model)
+self.models.append(model)
 &lt;/code>&lt;/pre></description></item></channel></rss>
