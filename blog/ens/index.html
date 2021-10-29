@@ -6,7 +6,7 @@ Sep 5, 2019</span></div></div><div class=article-container><div class=article-st
 achieved impressive performance on a wide spectrum of tasks. However, Quantifying their predictive uncertainty is still challenging. <code>Bayesian approximation</code> and <code>ensemble learning</code> techniques are two of the most widely-used uncertainty evaluation methods in the literature. In this outputt ill discuss the implementation of one of the simplest method (which still got great results) to create a deep neural network for estimating predictive uncertainty.</p><p><br></p><p>Such probabilistic models capture the inherent ambiguity in outputs for a given input (aleatoric uncertainty) and ensembles to capture subjective uncertainty (epistemic uncertainty). To that aim, we use a Gaussian parameterization of the form $p_\theta(y|z)=\mathcal{N}(\mu_\theta(z),\Sigma_\theta(z))$ where $y$ is the output and $z$ is the input respectively. The mean $\mu_\theta(z)$ and diagonal covariance $\Sigma_\theta(z)$ is given by a neural network. With deterministic NN, we can simply output the mean value $\mu_\theta(z)$, using <code>mean squared error</code> as the loss function during training $\mathcal{L}(\theta)= \sum_{n}(y-\mu(z))^{2}$. For probalistic NN, we treat the input $z$ as a sample from Gaussian distribution, while using a <code>negative log-likelihood loss</code> function:
 \begin{equation}
 \mathcal{L}(\theta)=-\log{p_\theta(y|z)}=\frac{\log{\sigma^{2}_\theta(zi)}}{2}+\frac{(y-\mu_\theta(z))^{2}}{2}+ const.
-\end{equation}</p><p align=center><img src=./ens1.png width=80%></p><p>During training we initialized each model $p_\theta^m$ with different random initialization parameters and different batch of the data and treated each ensemble as a Guassian mixture model. Each ensemble is then treated as Gaussian mixture model:
+\end{equation}</p><p align=center><img src=./ens1.png width=100%></p><p>During training we initialized each model $p_\theta^m$ with different random initialization parameters and different batch of the data and treated each ensemble as a Guassian mixture model. Each ensemble is then treated as Gaussian mixture model:
 \begin{equation}
 \mathcal{N}(\mu(z),\sigma^{2}(z)) = M^{-1}\sum_{m}{p_{\theta_m} (y|z)}
 \end{equation}
@@ -152,7 +152,7 @@ import torch.nn as nn
         self.params = params
         self.ensemble_size = self.params['ensemble_size']
 
-        self.models = []
+        GEs = []
         for i in range(self.ensemble_size):
             model = Model(self.params['out_dim'],
                             self.params['obs_dim'],
@@ -164,21 +164,21 @@ import torch.nn as nn
                             self.params['dropout_p'],
                             self.params['learning_rate'])
 
-            self.models.append(model)
+            GEs.append(model)
 
     def forward(self,  obs):
         means = []
         variances = []
         outputes = []
 
-        if self.models[0].deterministic:
-            for model in self.models:
+        if GEs[0].deterministic:
+            for model in GEs:
                 output = model.get_prediction(obs)
                 outputes.append(output)
             mean = np.mean(outputes, axis=0)
             variance = np.var(outputes, axis=0,ddof=1)
         else:
-            for model in self.models:
+            for model in GEs:
                 mean_m, var_m = model.get_prediction(obs)
                 means.append(mean_m)
                 variances.append(var_m)
@@ -195,7 +195,7 @@ import torch.nn as nn
         num_data_per_ens = int(num_data / self.ensemble_size)
 
         start = 0
-        for model in self.models:
+        for model in GEs:
             # select which datapoints to use for this model of the ensemble
             finish = start + num_data_per_ens
 
@@ -219,7 +219,7 @@ import torch.nn as nn
         num_data_per_ens = int(num_data / self.ensemble_size)
 
         start = 0
-        for model in self.models:
+        for model in GEs:
             # select which datapoints to use for this model of the ensemble
             finish = start + num_data_per_ens
 
@@ -237,12 +237,12 @@ import torch.nn as nn
         return avg_loss
 
     def save_models(self,path):
-        for i, model in enumerate(self.models):
+        for i, model in enumerate(GEs):
             model.save_model(path + str(i))
 
     def load_models(self,path):
 
-        self.models = []
+        GEs = []
         for i in range(self.ensemble_size):
             model = Model(self.params['out_dim'],
                             self.params['obs_dim'],
@@ -254,8 +254,79 @@ import torch.nn as nn
                             self.params['dropout_p'],
                             self.params['learning_rate'])
             model.load_model(path + str(i))
-            self.models.append(model)
-</code></pre></div><div class=share-box aria-hidden=true><ul class=share><li><a href="https://twitter.com/intent/tweet?url=https://osheraz.github.io/blog/ens/&text=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-twitter><i class="fab fa-twitter"></i></a></li><li><a href="https://www.facebook.com/sharer.php?u=https://osheraz.github.io/blog/ens/&t=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-facebook><i class="fab fa-facebook"></i></a></li><li><a href="mailto:?subject=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles&body=https://osheraz.github.io/blog/ens/" target=_blank rel=noopener class=share-btn-email><i class="fas fa-envelope"></i></a></li><li><a href="https://www.linkedin.com/shareArticle?url=https://osheraz.github.io/blog/ens/&title=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-linkedin><i class="fab fa-linkedin-in"></i></a></li><li><a href="whatsapp://send?text=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles%20https://osheraz.github.io/blog/ens/" target=_blank rel=noopener class=share-btn-whatsapp><i class="fab fa-whatsapp"></i></a></li><li><a href="https://service.weibo.com/share/share.php?url=https://osheraz.github.io/blog/ens/&title=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-weibo><i class="fab fa-weibo"></i></a></li></ul></div><div class="media author-card content-widget-hr"><a href=https://osheraz.github.io/><img class="avatar mr-3 avatar-circle" src=/authors/osher-azulay/avatar_hub134170bfb8ac65f2ae4f5f140cab5f2_67039_270x270_fill_q75_lanczos_center.jpg alt="Osher Azulay"></a><div class=media-body><h5 class=card-title><a href=https://osheraz.github.io/>Osher Azulay</a></h5><h6 class=card-subtitle>Roboticist</h6><p class=card-text>My research interests include robotic manipulation, deep reinforcement learning.</p><ul class=network-icon aria-hidden=true><li><a href=/#contact><i class="fas fa-envelope"></i></a></li><li><a href=https://github.com/osheraz target=_blank rel=noopener><i class="fab fa-github"></i></a></li><li><a href=https://www.linkedin.com/in/osher-azulay-20ab38154/ target=_blank rel=noopener><i class="fab fa-linkedin"></i></a></li></ul></div></div></div></article></div><div class=page-footer><div class=container><footer class=site-footer><p class=powered-by>Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target=_blank rel=noopener>Wowchemy</a> — the free, <a href=https://github.com/wowchemy/wowchemy-hugo-modules target=_blank rel=noopener>open source</a> website builder that empowers creators.</p></footer></div></div><div id=modal class="modal fade" role=dialog><div class=modal-dialog><div class=modal-content><div class=modal-header><h5 class=modal-title>Cite</h5><button type=button class=close data-dismiss=modal aria-label=Close>
+            GEs.append(model)
+</code></pre><h2 id=toy-example>Toy Example</h2><p>Lets consider the function $y = x^3$ as the ground truth.</p><p>The dataset is generated by sampling from $y = x^3+\epsilon$, where $\epsilon \sim \mathcal{N}(0,3^2)$.</p><p align=center><img src=./p1.png width=50%></p><pre><code>X = torch.tensor([[np.random.uniform(-4,4)] for i in range(20)])
+Y = torch.tensor([[x**3 + np.random.normal(0, std=3)] for x in xx])
+x = np.linspace(-6, 6, 100).reshape(100, 1)
+y = x**3
+plt.plot(x, y, 'b-', label='ground truth: $y=x^3$')
+plt.plot(X.numpy(),Y.numpy(),'or', label='data points')
+plt.grid()
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+</code></pre><pre><code>computation_graph_args = {
+    'out_dim': 1,
+    'ensemble_size': 3,
+    'n_layers': 3,
+    'size': 100,
+    'learning_rate': 0.001,
+    'device': &quot;cpu&quot;,
+    'deterministic': False,
+    'batch_size': 32 * 3,
+    'display_step': 100,
+    'epoch': 10,
+    'optimizer': &quot;Adam&quot;,
+    'dropout_p': 0.2,
+}
+</code></pre><pre><code># Init the Guassian mixture model
+GE = ModelEnsemble(computation_graph_args)
+</code></pre><pre><code>
+
+    epochs = computation_graph_args['epoch']
+    display_step = computation_graph_args['display_step']
+
+    COSTS = []
+    epoch_cost = []
+    count = 0
+
+    for epoch in range(epochs):
+        print(&quot;\nStart of epoch %d&quot; % (epoch,))
+
+        for (batch_idx, batch) in enumerate(train_generator):
+            count += 1
+            itr = batch_idx
+
+            batch_x, batch_y = batch['observation'].cpu().detach().numpy(), batch['target'].cpu().detach().numpy()
+
+            cost = GE.train(batch_x, batch_y)
+            COSTS.append(cost)
+
+        mean_train_loss = np.mean(COSTS[-len(self.train_generator):])
+        print('Epoch train loss : ' + str(mean_train_loss))
+
+        epoch_cost.append(mean_train_loss)
+
+    print(&quot;Optimization Finished!&quot;)
+</code></pre><pre><code>
+means = []
+variances = []
+for model in GE.models:
+    mean, var = model(torch.tensor(x).float())
+    mean = mean.detach().numpy()
+    var = var.detach().numpy()
+    means.append(mean)
+    variances.append(var)
+    std = np.sqrt(var)
+    plt.plot(x, mean, label='GMM (NLL) '+str(i+1),alpha=0.5)
+    plt.fill_between(x.reshape(100,), (mean-std).reshape(100,), (mean+std).reshape(100,),alpha=0.1)
+plt.plot(x, y, label='ground truth $y=x^3$', color='b')
+  plt.plot( X.numpy(),Y.numpy(),'or', label='data points')
+plt.title('Outputs of the network in the ensemble')
+plt.xlabel('x')
+plt.ylabel('y')
+</code></pre><p align=center><img src=./p2.png width=40%>
+<img src=./p3.png width=40%></p></div><div class=share-box aria-hidden=true><ul class=share><li><a href="https://twitter.com/intent/tweet?url=https://osheraz.github.io/blog/ens/&text=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-twitter><i class="fab fa-twitter"></i></a></li><li><a href="https://www.facebook.com/sharer.php?u=https://osheraz.github.io/blog/ens/&t=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-facebook><i class="fab fa-facebook"></i></a></li><li><a href="mailto:?subject=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles&body=https://osheraz.github.io/blog/ens/" target=_blank rel=noopener class=share-btn-email><i class="fas fa-envelope"></i></a></li><li><a href="https://www.linkedin.com/shareArticle?url=https://osheraz.github.io/blog/ens/&title=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-linkedin><i class="fab fa-linkedin-in"></i></a></li><li><a href="whatsapp://send?text=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles%20https://osheraz.github.io/blog/ens/" target=_blank rel=noopener class=share-btn-whatsapp><i class="fab fa-whatsapp"></i></a></li><li><a href="https://service.weibo.com/share/share.php?url=https://osheraz.github.io/blog/ens/&title=Uncertainty%20propagation%20in%20Deep%20Neural%20Networks%20using%20Ensembles" target=_blank rel=noopener class=share-btn-weibo><i class="fab fa-weibo"></i></a></li></ul></div><div class="media author-card content-widget-hr"><a href=https://osheraz.github.io/><img class="avatar mr-3 avatar-circle" src=/authors/osher-azulay/avatar_hub134170bfb8ac65f2ae4f5f140cab5f2_67039_270x270_fill_q75_lanczos_center.jpg alt="Osher Azulay"></a><div class=media-body><h5 class=card-title><a href=https://osheraz.github.io/>Osher Azulay</a></h5><h6 class=card-subtitle>Roboticist</h6><p class=card-text>My research interests include robotic manipulation, deep reinforcement learning.</p><ul class=network-icon aria-hidden=true><li><a href=/#contact><i class="fas fa-envelope"></i></a></li><li><a href=https://github.com/osheraz target=_blank rel=noopener><i class="fab fa-github"></i></a></li><li><a href=https://www.linkedin.com/in/osher-azulay-20ab38154/ target=_blank rel=noopener><i class="fab fa-linkedin"></i></a></li></ul></div></div></div></article></div><div class=page-footer><div class=container><footer class=site-footer><p class=powered-by>Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target=_blank rel=noopener>Wowchemy</a> — the free, <a href=https://github.com/wowchemy/wowchemy-hugo-modules target=_blank rel=noopener>open source</a> website builder that empowers creators.</p></footer></div></div><div id=modal class="modal fade" role=dialog><div class=modal-dialog><div class=modal-content><div class=modal-header><h5 class=modal-title>Cite</h5><button type=button class=close data-dismiss=modal aria-label=Close>
 <span aria-hidden=true>&#215;</span></button></div><div class=modal-body><pre><code class="tex hljs"></code></pre></div><div class=modal-footer><a class="btn btn-outline-primary my-1 js-copy-cite" href=# target=_blank><i class="fas fa-copy"></i> Copy</a>
 <a class="btn btn-outline-primary my-1 js-download-cite" href=# target=_blank><i class="fas fa-download"></i> Download</a><div id=modal-error></div></div></div></div></div><script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js integrity="sha512-TDKKr+IvoqZnPzc3l35hdjpHD0m+b2EC2SrLEgKDRWpxf2rFCxemkgvJ5kfU48ip+Y+m2XVKyOCD85ybtlZDmw==" crossorigin=anonymous></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/r.min.js></script><script id=search-hit-fuse-template type=text/x-template>
         <div class="search-hit" id="summary-{{key}}">
