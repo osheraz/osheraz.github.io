@@ -295,9 +295,9 @@ This post is mainly reproduction of the paper: &lt;code>Simple and Scalable Pred
 achieved impressive performance on a wide spectrum of tasks. However, Quantifying their predictive uncertainty is still challenging. &lt;code>Bayesian approximation&lt;/code> and &lt;code>ensemble learning&lt;/code> techniques are two of the most widely-used uncertainty evaluation methods in the literature. In this post ill discuss the implementation of one of the simplest method (which still got great results) to create a deep neural network for estimating predictive uncertainty.&lt;/p>
 &lt;p>&lt;br />&lt;/p>
 &lt;p>Such probabilistic models capture the inherent ambiguity in outputs for a given input (aleatoric uncertainty) and ensembles to capture subjective uncertainty (epistemic uncertainty). To that aim, we use a Gaussian parameterization of the form $p_\theta(y|z)=\mathcal{N}(\mu_\theta(z),\Sigma_\theta(z))$ where $y$ is the output and $z$ is the input respectively. The mean $\mu_\theta(z)$ and diagonal covariance $\Sigma_\theta(z)$ is given by a neural network. With deterministic NN, we can simply output the mean value $\mu_\theta(z)$, using &lt;code>mean squared error&lt;/code> as the loss function during training $\mathcal{L}(\theta)= \sum_{n}(y-\mu(z))^{2}$. For probalistic NN, we treat the input $z$ as a sample from Gaussian distribution, while using a &lt;code>negative log-likelihood loss&lt;/code> function:
-&lt;br />
-$\mathcal{L}(\theta)=-\log{p_\theta(y|z)}=\frac{\log{\sigma^{2}_\theta(z)}}{2}+\frac{(y}-\mu_\theta(z))^{2}}{2}+ const$
-&lt;br />&lt;/p>
+\begin{equation}
+\mathcal{L}(\theta)=-\log{p_\theta(y|z)}=\frac{\log{\sigma^{2}_\theta(zi)}}{2}+\frac{(y-\mu_\theta(z))^{2}}{2}+ const.
+\end{equation}&lt;/p>
 &lt;p>During training we initialized each model $p_\theta^m$ with different random initialization parameters and different batch of the data and treated each ensemble as a Guassian mixture model. Each ensemble is then treated as Gaussian mixture model:
 \begin{equation}
 \mathcal{N}(\mu(z),\sigma^{2}(z)) = M^{-1}\sum_{m}{p_{\theta_m} (y|z)}
@@ -308,4 +308,5 @@ where the mean and variance of the mixture is given by:
 \end{equation}
 \begin{equation}
 \sigma^{2}(z) = M^{-1}\sum_{m}(\sigma^{2}_{\theta_m}(z)+\mu^{2}_{\theta_m}(z)) - \mu(z)
-\end{equation}&lt;/p></description></item></channel></rss>
+\end{equation}&lt;/p>
+&lt;p>&lt;br />&lt;/p></description></item></channel></rss>
