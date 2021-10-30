@@ -388,7 +388,7 @@ Identifying and tracking the pose of &lt;code>bundles&lt;/code> consisting of mu
 &lt;p>&lt;br />&lt;/p>
 &lt;div class="alert alert-note">
 &lt;div>
-This outputt is mainly reproduction of the paper: &lt;code>Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles (DeepMind, NIPS 2017)&lt;/code>
+This post is mainly reproduction of the paper: &lt;code>Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles (DeepMind, NIPS 2017)&lt;/code>
 &lt;/div>
 &lt;/div>
 &lt;p>Deep neural networks (NNs) are powerful black box predictors that have recently
