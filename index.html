@@ -22,8 +22,14 @@
                 <p class="name" style="text-align: center">
                   Osher Azulay
                 </p>
-                <p> I’m a passionate roboticist pursuing my PhD studies at the <a href="https://robotics.eng.tau.ac.il/">ROB-TAU Robotics Lab</a>, Tel-Aviv University. My research focuses on advancing robotic intelligence through multi-sensory feedback for more adaptable and efficient manipulation.
-                   </p><p> Find my latest work here, feel free to contact me for any questions!</p>
+                <p> I’m a <a href="https://www.fulbright.org.il/node/900">Fulbright</a> postdoctoral researcher at the University of Michigan, working with <a href="https://web.eecs.umich.edu/~stellayu/">Prof. Stella Yu</a>. I work at the intersection of robotics, computer vision, tactile sensing, and machine learning, aiming to advance humanoid intelligence by unifying perception and action through multi-sensory learning.
+</p><p>
+                Previously, I earned my Ph.D. from Tel Aviv University in 2024, under the supervision of <a href="https://robotics.sites.tau.ac.il/">Dr. Avishai Sintov</a>. My doctoral work focused on robotic in-hand manipulation—specifically, enabling robots to perceive and adapt to the physical world through vision, force sensing, and, most notably, tactile feedback.
+</p><p>
+                I'm open to new collaborations and always enjoy discussing robotics and related research.
+</p><p>
+                 feel free to reach out!
+
                 <p style="text-align:center">
                   <a href="mailto:azulayosher@gmail.com">Email</a> &nbsp;/&nbsp;
                   <a href="data/Osher-CV.pdf">CV</a> &nbsp;/&nbsp;
@@ -33,7 +39,7 @@
                 </p>
               </td>
               <td style="padding:2.5%;width:30%;max-width:30%">
-                <a href="images/OsherAzulay-modified.png"><img style="width:100%;max-width:100%;object-fit: cover; border-radius: 50%;" alt="profile photo" src="images/OsherAzulay-modified.png" class="hoverZoomLink"></a>
+                <a href="images/osher_face.jpg"><img style="width:100%;max-width:100%;object-fit: cover; border-radius: 50%;" alt="profile photo" src="images/osher_face.jpg" class="hoverZoomLink"></a>
               </td>
             </tr>
           </tbody></table>
@@ -93,6 +99,23 @@
         </p>
       </td>
     </tr> -->
+
+<tr>
+  <td colspan="2" style="padding:20px;">
+    <h2>News</h2>
+    <ul id="news-list">
+      <li>July 2025 — Started my postdoc at UofM!</li>
+      <li>April 2025 — I gave a talk at ROAM-Lab Columbia University</li>
+      <li>Dec 2024 - I gave invited talks at Bar-Ilan University and Technion.</li>
+      <li>Nov 2024 - Recivied the Fulbright postdoctoral scholarship.</li>
+      <li class="more-news" style="display:none;">Oct 2024 — Defened my PhD.</li>
+      <!-- <li class="more-news" style="display:none;">Sep 2024 — Started collaboration with ABC Lab.</li> -->
+    </ul>
+    <p><a href="javascript:void(0);" id="toggle-news">Show more</a></p>
+  </td>
+</tr>
+
+
     <tr>
   <td colspan="2" style="padding:20px;">
     <h2 style="text-align:left;">Selected Publications:</h2>
@@ -332,7 +355,7 @@
               </td>
             </tr> -->
 
-            <tr>
+<!--             <tr>
               <td align="center" style="padding:20px;width:10%;vertical-align:middle">
                 <h2>Talks, Honor & <br> Recognition</h2>
               </td>
@@ -347,7 +370,7 @@
                 <li>Student Honor List: 2017-2018, 2018-2019.</li>
                 </ul>
               </td>
-            </tr>
+            </tr> -->
 
           </tbody></table>
 
@@ -364,5 +387,22 @@
         </td>
       </tr>
     </table>
+
+
+    <script>
+  const toggleBtn = document.getElementById('toggle-news');
+  const hiddenNews = document.querySelectorAll('.more-news');
+  let expanded = false;
+
+  toggleBtn.addEventListener('click', () => {
+    expanded = !expanded;
+    hiddenNews.forEach(item => {
+      item.style.display = expanded ? 'list-item' : 'none';
+    });
+    toggleBtn.textContent = expanded ? 'Show less' : 'Show more';
+  });
+</script>
+
+
   </body>
 </html>
