@@ -103,10 +103,17 @@
                     Full publication list on
                     <a href="https://scholar.google.com/citations?user=XQdRWyUAAAAJ&en=iw">Google Scholar</a>.
                   </p>
+                  <div class="publication-filters" role="group" aria-label="Filter publications by research area" hidden>
+                    <button type="button" data-filter="all" aria-pressed="true">All</button>
+                    <button type="button" data-filter="humanoids" aria-pressed="false">Humanoids</button>
+                    <button type="button" data-filter="mobile" aria-pressed="false">Mobile Robots</button>
+                    <button type="button" data-filter="tactile" aria-pressed="false">Tactile Sensing</button>
+                    <button type="button" data-filter="manipulation" aria-pressed="false">Manipulation</button>
+                  </div>
                 </td>
               </tr>
 
-              <tr>
+              <tr data-categories="humanoids">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <video class="project-preview" autoplay muted loop playsinline preload="metadata"
                     width="260" height="160" poster="images/steerable-recovery.jpg"
@@ -131,10 +138,15 @@
                 </td>
               </tr>
 
-              <tr>
+              <tr data-categories="mobile">
                 <td style="padding:20px;width:25%;vertical-align:middle">
-                  <img class="project-preview" src="https://schefferac2020.github.io/images/drew/egointercept.gif"
-                    alt="EgoIntercept: a quadruped intercepting a flying object" width="260" height="160" loading="lazy">
+                  <video class="project-preview" autoplay muted loop playsinline preload="metadata"
+                    width="260" height="160" poster="images/egointercept-privacy.jpg"
+                    aria-label="EgoIntercept: a quadruped intercepting a flying object">
+                    <source src="images/egointercept-privacy.mp4" type="video/mp4">
+                    <img src="images/egointercept-privacy.jpg" alt="A quadruped intercepting a flying object"
+                      width="260" height="160">
+                  </video>
                 </td>
                 <td width="75%" valign="middle">
                   <a href="https://egointercept.github.io/">
@@ -153,7 +165,7 @@
               </tr>
 
               <!-- Pub 1 -->
-              <tr>
+              <tr data-categories="humanoids">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <img src="images/vigor.gif" alt="VIGOR" width="260" height="140">
                 </td>
@@ -178,7 +190,7 @@
               </tr>
 
               <!-- Pub 2 -->
-              <tr>
+              <tr data-categories="mobile">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <img src="images/viden.gif" alt="ViDEN" width="260" height="140">
                 </td>
@@ -208,7 +220,7 @@
               </tr>
 
               <!-- Pub 3 -->
-              <tr>
+              <tr data-categories="tactile manipulation">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <img src="images/test.gif" alt="Visuotactile insertion" width="260" height="140">
                 </td>
@@ -234,7 +246,7 @@
               </tr>
 
               <!-- Pub 4 -->
-              <tr>
+              <tr data-categories="tactile">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <img src="images/allsight.gif" alt="AllSight" width="260" height="160">
                 </td>
@@ -264,7 +276,7 @@
               </tr>
 
               <!-- Pub 5 -->
-              <tr>
+              <tr data-categories="tactile">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <img src="images/aug.png" alt="Tactile simulators" width="260" height="160">
                 </td>
@@ -291,7 +303,7 @@
               </tr>
 
               <!-- Pub 6 -->
-              <tr>
+              <tr data-categories="manipulation">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <img src="images/se3.gif" alt="SE(3) insertion" width="260" height="160">
                 </td>
@@ -315,7 +327,7 @@
               </tr>
 
               <!-- Pub 7 -->
-              <tr>
+              <tr data-categories="manipulation">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <img src="images/throw.png" alt="Throwing" width="260" height="160">
                 </td>
@@ -341,7 +353,7 @@
               </tr>
 
               <!-- Pub 8 -->
-              <tr>
+              <tr data-categories="tactile manipulation">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <img src="images/haptic.gif" alt="Haptic pose estimation" width="260" height="160">
                 </td>
@@ -368,7 +380,7 @@
               </tr>
 
               <!-- Pub 9 -->
-              <tr>
+              <tr data-categories="mobile manipulation">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <img src="images/open.gif" alt="Open-sourcing generative models" width="260" height="160">
                 </td>
@@ -393,7 +405,7 @@
               </tr>
 
               <!-- Pub 10 -->
-              <tr>
+              <tr data-categories="mobile manipulation">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <img src="images/komodo.gif" alt="Komodo" width="260" height="160">
                 </td>
@@ -457,6 +469,25 @@
   </table>
 
   <script>
+    const publicationFilters = document.querySelector('.publication-filters');
+    const publicationRows = document.querySelectorAll('tr[data-categories]');
+    publicationFilters.hidden = false;
+    publicationFilters.addEventListener('click', (event) => {
+      const selected = event.target.closest('button[data-filter]');
+      if (!selected) return;
+      const category = selected.dataset.filter;
+      publicationFilters.querySelectorAll('button').forEach(button => {
+        button.setAttribute('aria-pressed', String(button === selected));
+      });
+      publicationRows.forEach(row => {
+        row.hidden = category !== 'all' && !row.dataset.categories.split(' ').includes(category);
+        row.querySelectorAll('video').forEach(video => {
+          if (row.hidden) video.pause();
+          else video.play().catch(() => {});
+        });
+      });
+    });
+
     const toggleBtn = document.getElementById('toggle-news');
     const hiddenNews = document.querySelectorAll('.more-news');
     let expanded = false;
