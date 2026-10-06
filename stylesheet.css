@@ -117,7 +117,7 @@ h2 {
 .publication-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 4px 20px;
   margin-top: 14px;
 }
 
@@ -126,19 +126,23 @@ h2 {
 }
 
 .publication-filters button {
-  padding: 5px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: #fff;
+  appearance: none;
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: none;
   color: #555;
   font: inherit;
   cursor: pointer;
 }
 
-.publication-filters button:hover,
+.publication-filters button:hover {
+  color: #1772d0;
+}
+
 .publication-filters button[aria-pressed="true"] {
-  border-color: #1772d0;
-  background: #edf5fc;
+  border-bottom-color: currentColor;
   color: #1772d0;
 }
 
