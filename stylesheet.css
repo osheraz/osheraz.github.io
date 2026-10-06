@@ -109,6 +109,36 @@ h2 {
   font-weight: 700;
 }
 
+.project-preview {
+  display: block;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  .profile-table > tbody > tr > td,
+  .content-table > tbody > tr > td:not([colspan]) {
+    display: block;
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 12px 20px !important;
+  }
+
+  .profile-table img {
+    display: block;
+    max-width: 180px !important;
+    margin: 0 auto;
+  }
+
+  .content-table img,
+  .content-table video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+}
+
 .name {
   padding-top: 20px;
   margin: 0;

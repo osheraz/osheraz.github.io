@@ -18,7 +18,7 @@
         <td style="padding:0px">
 
           <!-- Header -->
-          <table
+          <table class="profile-table"
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto">
             <tbody>
               <tr style="padding:0px">
@@ -68,7 +68,7 @@
           </table>
 
           <!-- Main content -->
-          <table
+          <table class="content-table"
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
 
@@ -106,6 +106,52 @@
                 </td>
               </tr>
 
+              <tr>
+                <td style="padding:20px;width:25%;vertical-align:middle">
+                  <video class="project-preview" autoplay muted loop playsinline preload="metadata"
+                    width="260" height="160" poster="images/steerable-recovery.jpg"
+                    aria-label="A humanoid follows a guided recovery motion">
+                    <source src="images/steerable-recovery.mp4" type="video/mp4">
+                    <img src="images/steerable-recovery.jpg" alt="Steerable humanoid recovery" width="260" height="160">
+                  </video>
+                </td>
+                <td width="75%" valign="middle">
+                  <a href="https://anonymous.4open.science/w/steerable-recovery-7E50/index.html">
+                    <span class="papertitle">Test-Time Motion Steering for Perceptive Humanoid Fall Recovery</span>
+                  </a>
+                  <br>
+                  <strong>Osher Azulay</strong>*,
+                  <a href="https://chenglinh.github.io/">Cheng-Lin Hsieh</a>*,
+                  and <a href="https://web.eecs.umich.edu/~stellayu/">Stella Yu</a>.
+                  <br>
+                  <em>In submission</em>. <span class="pub-note">* Equal contribution.</span>
+                  <br>
+                  <a href="https://anonymous.4open.science/w/steerable-recovery-7E50/index.html">project page</a>
+                  <p>Steers visually guided humanoid recovery toward a desired heading, rise timing, or path at test time.</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding:20px;width:25%;vertical-align:middle">
+                  <img class="project-preview" src="https://schefferac2020.github.io/images/drew/egointercept.gif"
+                    alt="EgoIntercept: a quadruped intercepting a flying object" width="260" height="160" loading="lazy">
+                </td>
+                <td width="75%" valign="middle">
+                  <a href="https://egointercept.github.io/">
+                    <span class="papertitle">EgoIntercept: Egocentric Object Interception with a Quadruped Robot</span>
+                  </a>
+                  <br>
+                  <a href="https://schefferac2020.github.io/">Drew Scheffer</a>,
+                  <strong>Osher Azulay</strong>,
+                  and <a href="https://web.eecs.umich.edu/~stellayu/">Stella X. Yu</a>.
+                  <br>
+                  <em>In submission</em>.
+                  <br>
+                  <a href="https://egointercept.github.io/">project page</a>
+                  <p>Learns egocentric object-motion prediction and locomotion to catch flying objects using only onboard RGB-D sensing.</p>
+                </td>
+              </tr>
+
               <!-- Pub 1 -->
               <tr>
                 <td style="padding:20px;width:25%;vertical-align:middle">
@@ -113,8 +159,7 @@
                 </td>
                 <td width="75%" valign="middle">
                   <a href="https://vigor2026.github.io/">
-                    <span class="papertitle">VIGOR: Visual Goal-In-Context Inference for Unified Humanoid Fall
-                      Safety</span>
+                    <span class="papertitle">Unified Perceptive Fall Safety for Humanoids</span>
                   </a>
                   <br>
                   <strong><a href="https://osheraz.github.io/">Osher Azulay</a></strong>,
@@ -128,7 +173,7 @@
                   /
                   <a href="https://arxiv.org/abs/2602.16511">paper</a>
                   <p></p>
-                  <p>Unified fall mitigation + stand-up recovery distilled into an egocentric-depth policy.</p>
+                  <p>VIGOR unifies perceptive fall mitigation and stand-up recovery using sparse flat-ground demonstrations.</p>
                 </td>
               </tr>
 
