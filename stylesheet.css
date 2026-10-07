@@ -113,9 +113,8 @@ h2 {
 .content-table tr[data-categories] > td:first-child > video {
   display: block;
   width: 260px;
-  height: 160px;
+  height: auto;
   margin: 0 auto;
-  object-fit: contain;
 }
 
 .publication-filters {
