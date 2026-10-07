@@ -206,6 +206,7 @@ h2 {
 }
 
 .news-container {
+  max-width: 580px;
   max-height: 80px;
   /* keep your scroll height */
   overflow-y: auto;
@@ -228,6 +229,7 @@ h2 {
 
 .news-container li {
   margin-bottom: 4px;
+  line-height: 1.4;
 }
 
 .teaching-container {
