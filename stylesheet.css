@@ -109,8 +109,12 @@ h2 {
   font-weight: 700;
 }
 
-.project-preview {
+.content-table tr[data-categories] > td:first-child > img,
+.content-table tr[data-categories] > td:first-child > video {
   display: block;
+  width: 260px;
+  height: 160px;
+  margin: 0 auto;
   object-fit: contain;
 }
 
@@ -167,12 +171,9 @@ h2 {
     margin: 0 auto;
   }
 
-  .content-table img,
-  .content-table video {
-    display: block;
+  .content-table tr[data-categories] > td:first-child > img,
+  .content-table tr[data-categories] > td:first-child > video {
     max-width: 100%;
-    height: auto;
-    margin: 0 auto;
   }
 }
 
